@@ -16,9 +16,4 @@ abstract public class Communication {
         this._from = from;
     }
 
-    // FIXME isto está no UML mas não faz sentido.
-    protected int getSize(){
-        return 0;
-    }
-
 }

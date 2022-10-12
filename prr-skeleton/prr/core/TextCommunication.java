@@ -14,7 +14,7 @@ public class TextCommunication extends Communication{
      *
      * @return size of _message
      **/
-    @Override
+
     protected int getSize(){
         return _message.length();
     }
