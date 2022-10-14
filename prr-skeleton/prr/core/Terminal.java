@@ -15,7 +15,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
-  
+
   private String _id;
   private double _debt;
   private double _payments;
@@ -27,6 +27,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private Communication _ongoingCommunication;
 
   List<Notification> _toNotify;
+
 
   protected Terminal() {
   }
@@ -130,5 +131,50 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     }
     return false;
   }
+
+  // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
+  // FIXME garantir que a função só se aplica aos filhos
+
+  public String toString(){
+    String terminalType = "";
+    if (this instanceof BasicTerminal){
+      terminalType = "BASIC";
+    }
+    else if (this instanceof FancyTerminal){
+      terminalType = "FANCY";
+    }
+    String terminalId = this._id;
+    String clientId = this._owner._id;
+    String terminalStatus = this._mode.toString();
+    String balancePaid = Double.toString(this._payments);
+    String balanceDebts = Double.toString(this._debt);
+    String friends = "";
+
+    // Now we sort terminal friends by growing id
+    ArrayList<Terminal> sortedFriends = new ArrayList<Terminal>();
+    for (Terminal friend : this._friends){
+      if (sortedFriends.isEmpty()){
+        sortedFriends.add(friend);
+      }
+      else {
+        for (int i = 0; i < sortedFriends.size(); i++){
+          if (friend._id.compareTo(sortedFriends.get(i)._id) < 0){
+            sortedFriends.add(i, friend);
+            break;
+          }
+          else if (i == sortedFriends.size() - 1){
+            sortedFriends.add(friend);
+            break;
+          }
+        }
+      }
+    }
+    for (Terminal friend : sortedFriends){
+      friends += friend._id + ",";
+    }
+    friends = friends.substring(0, friends.length() - 1);
+
+    return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + "|" + friends;
+  };
 
 }
