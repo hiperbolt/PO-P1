@@ -75,4 +75,5 @@ interface Message {
   static String terminalType() {
     return "Tipo de terminal (BASIC ou FANCY): ";
   }
+  
 }

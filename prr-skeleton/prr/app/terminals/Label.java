@@ -16,4 +16,10 @@ interface Label {
 
   /** Open administration menu for terminal.. */
   String OPEN_MENU_TERMINAL = "Operações de terminal";
+
+   /** Request Terminal ID*/
+  String TerminalId = "Terminal ID: ";
+
+  /** Request TerminalType*/
+  String ClientId = "Client Id: ";
 }

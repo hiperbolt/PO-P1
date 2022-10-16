@@ -15,11 +15,19 @@ class DoRegisterTerminal extends Command<Network> {
 
   DoRegisterTerminal(Network receiver) {
     super(Label.REGISTER_TERMINAL, receiver);
-    //FIXME add command fields
+    Form _form = new Form();
   }
 
   @Override
   protected final void execute() throws CommandException {
-    reciver.addTerminal(terminal)
+    _form.addStringField("0", Message.terminalKey());
+    if (stringField("0").lenght() != 6)
+      throw 
+    _form.addStringField("1", Message.terminalType());
+    while(stringField("1") != "FANCY" || stringField("1") != "BASIC"){
+      _form.addStringField("1", "Terminal type must be FANCY or SIMPLE:");
+    }
+    _form.addIntegerField("2", Message.clientKey());
+    
   }
 }

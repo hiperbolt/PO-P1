@@ -12,9 +12,10 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show all terminals.
  */
 class DoShowAllTerminals extends Command<Network> {
-
+  protected Display _display;
   DoShowAllTerminals(Network receiver) {
     super(Label.SHOW_ALL_TERMINALS, receiver);
+    _display = new Display()
   }
 
   @Override
