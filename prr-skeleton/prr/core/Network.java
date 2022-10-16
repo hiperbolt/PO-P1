@@ -2,11 +2,9 @@ package prr.core;
 
 import java.io.Serializable;
 import java.io.IOException;
-import prr.core.exception.UnrecognizedEntryException;
-
+import prr.app.exception.DuplicateClientKeyException;
 import java.util.ArrayList;
 import java.util.List;
-import prr.core.TerminalType;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 

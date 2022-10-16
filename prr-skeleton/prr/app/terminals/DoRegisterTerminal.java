@@ -3,9 +3,7 @@ import prr.core.Network;
 import prr.core.Terminal;
 import prr.core.FancyTerminal;
 import prr.core.BasicTerminal;
-import prr.app.exception.DuplicateTerminalKeyException;
-import prr.app.exception.InvalidTerminalKeyException;
-import prr.app.exception.UnknownClientKeyException;
+import prr.app.exception.*;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
