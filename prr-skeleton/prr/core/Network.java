@@ -6,6 +6,7 @@ import prr.core.exception.UnrecognizedEntryException;
 
 import java.util.ArrayList;
 import java.util.List;
+import prr.core.TerminalType;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -56,6 +57,36 @@ public class Network implements Serializable {
   }
   public void registerTerminal(Terminal terminal){
     _terminals.add(terminal);
+  }
+  public List<Terminal> getAllTerminals(){
+    return _terminals;
+  }
+  public List<Client> getAllClients(){
+    return _clients;
+  }
+  public boolean clientExists(String id){
+    for (Client c : _clients){
+      if (c.getId().equals(id)){
+        return true;
+      }
+    }
+    return false;
+  }
+  public TerminalType stringToType(String type){
+    if (type.equals("FANCY")){
+      return TerminalType.FANCY;
+    }
+    if (type.equals("BASIC")){
+      return TerminalType.BASIC;
+    }
+  }
+  public Client clientById(String id){
+    for (Client c : _clients){
+      if (c.getId().equals(id)){
+        return c;
+      }
+    }
+    return null;
   }
 }
 

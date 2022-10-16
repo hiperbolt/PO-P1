@@ -32,6 +32,9 @@ public class Client {
     public void disableReceiveNotifications(){
         this._receiveNotifications = false;
     }
+    public String getKey(){
+        return this._key;
+    }
 
     /**
      * Enables the client to receive notifications.

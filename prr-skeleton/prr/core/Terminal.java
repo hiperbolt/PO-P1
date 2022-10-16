@@ -25,11 +25,19 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   List<Communication> _madeCommunications;
   List<Communication> _receivedCommunications;
   private Communication _ongoingCommunication;
-
   List<Notification> _toNotify;
 
 
-  protected Terminal() {
+  public Terminal(String id, Client owner) {
+    _id = id;
+    _owner = owner;
+    _debt = 0;
+    _payments = 0;
+    _mode = TerminalMode.ON;
+    _madeCommunications = new ArrayList<Communication>();
+    _receivedCommunications = new ArrayList<Communication>();
+    _ongoingCommunication = null;
+    _toNotify = new ArrayList<Notification>();
   }
   // FIXME define notifications
 
@@ -131,9 +139,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     }
     return false;
   }
+  
+  public String getId() {
+    return _id;
+  }
 
   // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-  // FIXME garantir que a função só se aplica aos filhos
+  // FIXME garantir que a função só se aplica aos filhos de Terminal
 
   public String toString(){
     String terminalType = "";
@@ -144,7 +156,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
       terminalType = "FANCY";
     }
     String terminalId = this._id;
-    String clientId = this._owner._id;
+    String clientId = this._owner.getKey();
     String terminalStatus = this._mode.toString();
     String balancePaid = Double.toString(this._payments);
     String balanceDebts = Double.toString(this._debt);

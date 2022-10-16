@@ -25,7 +25,7 @@ public abstract class Command<Receiver> {
   protected Predicate<Receiver> _valid = receiver -> true;
 
   /** This command's input form. */
-  private final Form _form;
+  protected final Form _form;
 
   /** This command's display. */
   protected final Display _display;
