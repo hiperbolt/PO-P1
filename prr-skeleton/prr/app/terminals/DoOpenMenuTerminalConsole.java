@@ -2,6 +2,7 @@ package prr.app.terminals;
 
 import prr.core.Network;
 import prr.app.exception.UnknownTerminalKeyException;
+import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import prr.app.terminal.Menu;
@@ -15,19 +16,16 @@ class DoOpenMenuTerminalConsole extends Command<Network> {
   DoOpenMenuTerminalConsole(Network receiver) {
     super(Label.OPEN_MENU_TERMINAL, receiver);
     _receiver = receiver;
+    addStringField("terminalId", Message.terminalKey());
   }
 
   @Override
   protected final void execute() throws CommandException {
-    _form.addStringField("0", Message.terminalKey());
-
     // If the terminal does not exist, we throw a UnknownTerminalKeyException
-    // FIXME isto tá bue feio
-    if(!_receiver.terminalExists(stringField("0"))){
-      throw new UnknownTerminalKeyException(stringField("0"));
+    if(!_receiver.terminalExists(stringField("terminalId"))){
+      throw new UnknownTerminalKeyException(stringField("terminalId"));
     }
 
-    // FIXME como é que abrimos isto.. perguntar ao mendo
-    new prr.app.terminal.Menu(_receiver, _receiver.terminalById(stringField("0")));
+    new prr.app.terminal.Menu(_receiver, _receiver.terminalById(stringField("terminalId"))).open();
   }
 }

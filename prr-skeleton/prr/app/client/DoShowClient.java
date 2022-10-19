@@ -1,5 +1,6 @@
 package prr.app.client;
 
+import prr.core.Client;
 import prr.core.Network;
 import prr.app.exception.UnknownClientKeyException;
 import pt.tecnico.uilib.menus.Command;
@@ -14,11 +15,12 @@ class DoShowClient extends Command<Network> {
   DoShowClient(Network receiver) {
     super(Label.SHOW_CLIENT, receiver);
     _receiver = receiver;
+    addStringField("clientId", Message.key());
   }
   
   @Override
   protected final void execute() throws CommandException {
-    // FIXME posso aceder a este codigo diretamente no client ou tenho de fazer sempre pela network?
-    _receiver.showClient();
+    Client c = _receiver.clientById(stringField("clientId"));
+    _display.popup(c.toString());
   }
 }
