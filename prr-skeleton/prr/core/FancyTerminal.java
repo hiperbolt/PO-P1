@@ -1,7 +1,7 @@
 package prr.core;
 
 /**
- * Basic Terminal, extends abstract Terminal.
+ * Fancy Terminal, extends abstract Terminal.
  */
 
 public class FancyTerminal extends Terminal{

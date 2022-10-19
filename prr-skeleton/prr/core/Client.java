@@ -26,6 +26,7 @@ public class Client {
         this._tariffPlan = new BasicPlan(); // Temporary since there is only one tariff plan.
     }
 
+
     /**
      * Disables notifications.
      */

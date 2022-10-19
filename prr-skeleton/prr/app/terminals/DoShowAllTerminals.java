@@ -5,7 +5,6 @@ import prr.core.Network;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import pt.tecnico.uilib.Display;
-//FIXME add more imports if needed
 
 /**
  * Show all terminals.
@@ -15,6 +14,7 @@ class DoShowAllTerminals extends Command<Network> {
   private Network _receiver;
   DoShowAllTerminals(Network receiver) {
     super(Label.SHOW_ALL_TERMINALS, receiver);
+    _receiver = receiver;
     new Display();
   }
 

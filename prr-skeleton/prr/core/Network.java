@@ -2,7 +2,7 @@ package prr.core;
 
 import java.io.Serializable;
 import java.io.IOException;
-import prr.app.exception.DuplicateClientKeyException;
+import prr.core.exception.UnrecognizedEntryException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Network implements Serializable {
    * @throws UnrecognizedEntryException if some entry is not correct
    * @throws IOException if there is an IO erro while processing the text file
    */
-  void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */  {
+  void importFile(String filename) throws UnrecognizedEntryException, IOException {
     //FIXME implement method
   }
   public Network(){
@@ -41,21 +41,25 @@ public class Network implements Serializable {
     _terminals = new ArrayList<Terminal>();
     _tariffPlans = new ArrayList<TariffPlan>();
   }
-  public void registerClient(int id, String name, String address, int vat, int phone) throws DuplicateClientKeyException, InvalidClientKeyException{
-    for (Client c : _clients){
-      if (c.getId() == id){
-        throw new DuplicateClientKeyException(id);
-      }
-    }
-    if (id < 0){
-      throw new InvalidClientKeyException(id);
-    }
-    Client c = new Client(id, name, address, vat, phone);
+
+  /**
+   * Registers a new clients. All checks are done app-side, we simply register a new client object.
+   *
+   * @param c - Client object.
+   */
+  public void registerClient(Client c) {
     _clients.add(c);
   }
-  public void registerTerminal(Terminal terminal){
-    _terminals.add(terminal);
+
+  /**
+   * Registers a new terminal. All checks are done app-side, we simply register a new terminal object.
+   *
+   * @param t - Terminal object
+   */
+  public void registerTerminal(Terminal t){
+    _terminals.add(t);
   }
+
   public List<Terminal> getAllTerminals(){
     return _terminals;
   }
@@ -64,24 +68,35 @@ public class Network implements Serializable {
   }
   public boolean clientExists(String id){
     for (Client c : _clients){
-      if (c.getId().equals(id)){
+      if (c.getKey().equals(id)){
         return true;
       }
     }
     return false;
   }
-  public TerminalType stringToType(String type){
-    if (type.equals("FANCY")){
-      return TerminalType.FANCY;
+  public boolean terminalExists(String id){
+    for (Terminal t : _terminals){
+      if (t.getId().equals(id)){
+        return true;
+      }
     }
-    if (type.equals("BASIC")){
-      return TerminalType.BASIC;
-    }
+    return false;
   }
+
+
   public Client clientById(String id){
     for (Client c : _clients){
-      if (c.getId().equals(id)){
+      if (c.getKey().equals(id)){
         return c;
+      }
+    }
+    return null;
+  }
+
+  public Terminal terminalById(String id){
+    for (Terminal t : _terminals){
+      if (t.getId().equals(id)){
+        return t;
       }
     }
     return null;

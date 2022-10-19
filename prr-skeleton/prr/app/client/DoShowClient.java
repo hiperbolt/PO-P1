@@ -10,14 +10,15 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show specific client: also show previous notifications.
  */
 class DoShowClient extends Command<Network> {
-
+  private Network _receiver;
   DoShowClient(Network receiver) {
     super(Label.SHOW_CLIENT, receiver);
-    //FIXME add command fields
+    _receiver = receiver;
   }
   
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+    // FIXME posso aceder a este codigo diretamente no client ou tenho de fazer sempre pela network?
+    _receiver.showClient();
   }
 }

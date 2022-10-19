@@ -28,7 +28,16 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   List<Notification> _toNotify;
 
 
-  public Terminal(String id, Client owner) {
+  /**
+   * Abstract Terminal constructor.
+   *
+   * @param id - Terminal key
+   * @param owner - Owner client's id
+   *
+   * @throws InvalidTerminalKeyException - If the provided terminal key is in an invalid format.
+   * @throws DuplicateTerminalKeyException - If the provided terminal key already exists.
+   */
+  public Terminal(String id, Client owner){
     _id = id;
     _owner = owner;
     _debt = 0;
@@ -43,6 +52,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
   // FIXME define contructor(s)
   // FIXME define methods
+
 
 
   /**

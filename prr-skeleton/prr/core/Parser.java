@@ -74,7 +74,7 @@ public class Parser {
       Terminal terminal = _network.registerTerminal(components[0], components[1], components[2]);
       switch(components[3]) {
         case "SILENCE" -> terminal.setOnSilent();
-        case "OFF" -> terminal->turnOff();
+        case "OFF" -> terminal.turnOff();
         default -> {
          if (!components[3].equals("ON"))
            throw new UnrecognizedEntryException("Invalid specification in line: " + line);
