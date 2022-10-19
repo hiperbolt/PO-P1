@@ -141,5 +141,25 @@ public class Network implements Serializable {
   public List<Client> getAllClients(){
     return _clients;
   }
+
+  public List<Communication> getAllCommunications(){
+    return _communications;
+  }
+
+  public List<Terminal> getUnusedTerminals(){
+    List<Terminal> unusedTerminals = new ArrayList<>();
+    for(Terminal t : _terminals){
+      if(t.isUnused()){
+        unusedTerminals.add(t);
+      }
+    }
+    return unusedTerminals;
+  }
+
+  public List<Terminal> getClientsWithDebt(){
+
+  }
+
 }
+
 

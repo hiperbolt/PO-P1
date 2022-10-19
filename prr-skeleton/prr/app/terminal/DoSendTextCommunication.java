@@ -11,9 +11,10 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command for sending a text communication.
  */
 class DoSendTextCommunication extends TerminalCommand {
-
+  Terminal _terminal;
   DoSendTextCommunication(Network context, Terminal terminal) {
     super(Label.SEND_TEXT_COMMUNICATION, context, terminal, receiver -> receiver.canStartCommunication());
+    _terminal = terminal;
   }
   
   @Override

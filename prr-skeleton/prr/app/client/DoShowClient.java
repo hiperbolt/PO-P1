@@ -11,16 +11,16 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show specific client: also show previous notifications.
  */
 class DoShowClient extends Command<Network> {
-  private Network _receiver;
+
   DoShowClient(Network receiver) {
     super(Label.SHOW_CLIENT, receiver);
-    _receiver = receiver;
     addStringField("clientId", Message.key());
   }
   
   @Override
   protected final void execute() throws CommandException {
     Client c = _receiver.clientById(stringField("clientId"));
-    _display.popup(c.toString());
+    // Popup calls display(), so it should call toString() automatically.
+    _display.popup(c);
   }
 }

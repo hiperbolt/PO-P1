@@ -11,11 +11,8 @@ import prr.app.terminal.Menu;
  * Open a specific terminal's menu.
  */
 class DoOpenMenuTerminalConsole extends Command<Network> {
-  Network _receiver;
-
   DoOpenMenuTerminalConsole(Network receiver) {
     super(Label.OPEN_MENU_TERMINAL, receiver);
-    _receiver = receiver;
     addStringField("terminalId", Message.terminalKey());
   }
 

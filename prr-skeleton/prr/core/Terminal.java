@@ -20,7 +20,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private double _debt;
   private double _payments;
   private TerminalMode _mode;
-  ArrayList<Terminal> _friends = new ArrayList<Terminal>();
+
+  List<String> _friends;
   private Client _owner;
   List<Communication> _madeCommunications;
   List<Communication> _receivedCommunications;
@@ -48,12 +49,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     _ongoingCommunication = null;
     _toNotify = new ArrayList<Notification>();
   }
-  // FIXME define notifications
-
-  // FIXME define contructor(s)
-  // FIXME define methods
-
-
 
   /**
    * Creates and sends an SMS (if terminal is not BUSY or OFF).
@@ -152,6 +147,20 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   
   public String getId() {
     return _id;
+  }
+  public boolean removeFriend(String friendId){
+    return _friends.removeIf(t -> t.equals(friendId));
+  }
+
+  public boolean addFriend(String friendId){
+    return _friends.add(friendId);
+  }
+
+  public boolean isUnused(){
+    if (_madeCommunications.isEmpty() && _receivedCommunications.isEmpty()){
+      return true;
+    }
+    return false;
   }
 
   // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend

@@ -10,10 +10,8 @@ import pt.tecnico.uilib.menus.CommandException;
  * Register terminal.
  */
 class DoRegisterTerminal extends Command<Network> {
-  Network _receiver;
   DoRegisterTerminal(Network receiver) {
     super(Label.REGISTER_TERMINAL, receiver);
-    _receiver = receiver;
     addStringField("terminalId", Message.terminalKey());
     addOptionField("terminalType", Message.terminalType(), "BASIC", "FANCY");
     addStringField("ownerID", Message.clientKey());

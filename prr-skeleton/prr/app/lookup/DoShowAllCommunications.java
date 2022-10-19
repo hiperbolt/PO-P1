@@ -10,12 +10,16 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoShowAllCommunications extends Command<Network> {
 
+
   DoShowAllCommunications(Network receiver) {
     super(Label.SHOW_ALL_COMMUNICATIONS, receiver);
   }
 
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+
+    // We take advantage of addAll method of display to add all communications at once.
+    _display.addAll(_receiver.getAllCommunications());
+    _display.display();
   }
 }

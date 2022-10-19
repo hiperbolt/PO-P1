@@ -11,9 +11,10 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command for starting communication.
  */
 class DoStartInteractiveCommunication extends TerminalCommand {
-
+  Terminal _terminal;
   DoStartInteractiveCommunication(Network context, Terminal terminal) {
     super(Label.START_INTERACTIVE_COMMUNICATION, context, terminal, receiver -> receiver.canStartCommunication());
+    _terminal = terminal;
   }
   
   @Override

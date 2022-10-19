@@ -9,9 +9,10 @@ import pt.tecnico.uilib.menus.CommandException;
  * Perform payment.
  */
 class DoPerformPayment extends TerminalCommand {
-
+  Terminal _terminal;
   DoPerformPayment(Network context, Terminal terminal) {
     super(Label.PERFORM_PAYMENT, context, terminal);
+    _terminal = terminal;
     //FIXME add command fields
   }
   
