@@ -18,7 +18,6 @@ public class Network implements Serializable {
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
-  private String _filename = null;
   private List<Communication> _communications;
   private List<Client> _clients;
   private List<Terminal> _terminals;
@@ -44,17 +43,7 @@ public class Network implements Serializable {
     _terminals = new ArrayList<Terminal>();
     _tariffPlans = new ArrayList<TariffPlan>();
   }
-  /**
-   * Sets file name
-   * @param filename
-   */
-  public void setFilename(String filename){
-    _filename = filename;
-  }
 
-  public String getFilename(){
-    return _filename;
-  }
   /**
    * Register new client.
    * @param id - Client ID

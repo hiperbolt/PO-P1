@@ -21,7 +21,7 @@ public class NetworkManager {
 
   /** The network itself. */
   private Network _network = new Network();
-  
+  private String _filename = null;
   public Network getNetwork() {
     return _network;
   }
@@ -55,10 +55,10 @@ public class NetworkManager {
    * @throws IOException if there is some error while serializing the state of the network to disk.
    */
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-    if (_network.getFilename() == null) {
+    if (_filename == null) {
       throw new MissingFileAssociationException();
     }
-    FileOutputStream fileOut = new FileOutputStream(_network.getFilename());
+    FileOutputStream fileOut = new FileOutputStream(_filename);
     ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
     objectOut.writeObject(_network);
     objectOut.close();
@@ -76,7 +76,7 @@ public class NetworkManager {
    */
   public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException, UnavailableFileException {
     try{
-      _network.setFilename(filename);
+      _filename = filename;
       FileOutputStream fileOutputStream
         = new FileOutputStream(filename);
       ObjectOutputStream objectOutputStream 
