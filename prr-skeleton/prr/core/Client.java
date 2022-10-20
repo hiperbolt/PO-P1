@@ -1,12 +1,14 @@
 package prr.core;
 
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Client.
  */
-public class Client {
+public class Client implements Serializable{
+    private static final long serialVersionUID = 202208091753L;
+
     private String _key;
     private String _name;
     private int _taxNumber;

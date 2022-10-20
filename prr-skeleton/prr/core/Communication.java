@@ -1,6 +1,9 @@
 package prr.core;
 
-abstract public class Communication {
+import java.io.Serializable;
+abstract public class Communication implements Serializable{
+    private static final long serialVersionUID = 202208091753L;
+
     static int _counter;     /* Counts the number of communication objects instantiated.*/
     int _id;
     boolean _isPaid;

@@ -1,7 +1,11 @@
 package prr.core;
 
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import prr.core.exception.ImportFileException;
 import prr.core.exception.MissingFileAssociationException;
@@ -30,7 +34,18 @@ public class NetworkManager {
    *         an error while processing this file.
    */
   public void load(String filename) throws UnavailableFileException {
-    //FIXME implement serialization method
+    try{
+      FileInputStream fileInputStream = new FileInputStream(filename);
+      ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+      _network = (Network) objectInputStream.readObject();
+      objectInputStream.close();
+    } catch (FileNotFoundException e) {
+      throw new UnavailableFileException(filename);
+    } catch (IOException e) {
+      throw new UnavailableFileException(filename);
+    } catch (ClassNotFoundException e) {
+      throw new UnavailableFileException(filename);
+    }
   }
   
   /**
@@ -52,10 +67,24 @@ public class NetworkManager {
    * @throws FileNotFoundException if for some reason the file cannot be created or opened.
    * @throws MissingFileAssociationException if the current network does not have a file.
    * @throws IOException if there is some error while serializing the state of the network to disk.
+   * @throws UnavailableFileException
    */
-  public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
-    //FIXME implement serialization method
+  public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException, UnavailableFileException {
+    try{
+      FileOutputStream fileOutputStream
+        = new FileOutputStream(filename);
+      ObjectOutputStream objectOutputStream 
+        = new ObjectOutputStream(fileOutputStream);
+      objectOutputStream.writeObject(_network);
+      objectOutputStream.flush();
+      objectOutputStream.close();
+    } catch (FileNotFoundException e) {
+      throw new UnavailableFileException(filename);
+    } catch (IOException e) {
+      throw new UnavailableFileException(filename);
+    }
   }
+
   
   /**
    * Read text input file and create domain entities..

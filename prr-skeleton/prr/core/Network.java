@@ -2,7 +2,6 @@ package prr.core;
 
 import java.io.Serializable;
 import java.io.IOException;
-
 import prr.core.exception.InvalidKeyException;
 import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.UnrecognizedEntryException;
@@ -37,7 +36,7 @@ public class Network implements Serializable {
    * @throws IOException if there is an IO erro while processing the text file
    */
   void importFile(String filename) throws UnrecognizedEntryException, IOException {
-    //FIXME implement method
+    // FIXME implement importFile method
   }
   public Network(){
     _communications = new ArrayList<Communication>();
