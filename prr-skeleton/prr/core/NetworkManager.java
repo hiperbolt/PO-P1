@@ -11,8 +11,7 @@ import prr.core.exception.ImportFileException;
 import prr.core.exception.MissingFileAssociationException;
 import prr.core.exception.UnavailableFileException;
 import prr.core.exception.UnrecognizedEntryException;
-
-//FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
+import pt.tecnico.uilib.forms.Form;
 
 /**
  * Manage access to network and implement load/save operations.
@@ -56,7 +55,7 @@ public class NetworkManager {
    */
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
     if (_filename == null) {
-      throw new MissingFileAssociationException();
+      saveAs(Form.requestString("Nome do ficheiro?"));
     }
     FileOutputStream fileOut = new FileOutputStream(_filename);
     ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
@@ -72,9 +71,8 @@ public class NetworkManager {
    * @throws FileNotFoundException if for some reason the file cannot be created or opened.
    * @throws MissingFileAssociationException if the current network does not have a file.
    * @throws IOException if there is some error while serializing the state of the network to disk.
-   * @throws UnavailableFileException
    */
-  public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException, UnavailableFileException {
+  public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException{
     try{
       _filename = filename;
       FileOutputStream fileOutputStream
@@ -85,9 +83,9 @@ public class NetworkManager {
       objectOutputStream.flush();
       objectOutputStream.close();
     } catch (FileNotFoundException e) {
-      throw new UnavailableFileException(filename);
+      throw new FileNotFoundException(filename);
     } catch (IOException e) {
-      throw new UnavailableFileException(filename);
+      throw new IOException(filename);
     }
   }
 
