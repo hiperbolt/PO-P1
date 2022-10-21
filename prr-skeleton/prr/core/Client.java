@@ -53,6 +53,9 @@ public class Client implements Serializable{
      */
     public int calculatePayments() {
         int res = 0;
+        if (_paidCommunications.isEmpty()){
+            return 0;
+        }
         for (Communication paidCommunication : _paidCommunications) {
             res += paidCommunication.getCost();
         }
@@ -66,6 +69,9 @@ public class Client implements Serializable{
      */
     public int calculateDebts() {
         int res = 0;
+        if (_inDebtCommunications.isEmpty()){
+            return 0;
+        }
         for (Communication paidCommunication : _inDebtCommunications) {
             res += paidCommunication.getCost();
         }
