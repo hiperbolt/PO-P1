@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
 /**
  * Abstract Terminal.
@@ -21,12 +20,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private double _payments;
   private TerminalMode _mode;
 
-  List<Terminal> _friends;
+  private List<Terminal> _friends;
   private Client _owner;
-  List<Communication> _madeCommunications;
-  List<Communication> _receivedCommunications;
+  private List<Communication> _madeCommunications;
+  private List<Communication> _receivedCommunications;
   private Communication _ongoingCommunication;
-  List<Notification> _toNotify;
+  private List<Notification> _toNotify;
 
 
   /**
@@ -85,7 +84,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
    *          it was the originator of this communication.
    **/
   public boolean canEndCurrentCommunication() {
-    if (_mode == TerminalMode.BUSY && this._ongoingCommunication._from == this){
+    if (_mode == TerminalMode.BUSY && this._ongoingCommunication.getFrom() == this){
       return true;
     }
     return false;

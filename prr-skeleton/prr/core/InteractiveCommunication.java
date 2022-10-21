@@ -1,7 +1,7 @@
 package prr.core;
 
 abstract public class InteractiveCommunication extends Communication{
-    int _duration;
+    private int _duration;
 
     // Constructor
     public InteractiveCommunication(Terminal to, Terminal from){

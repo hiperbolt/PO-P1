@@ -4,5 +4,5 @@ package prr.core;
  * Abstract Tariff Plan.
  */
 abstract public class TariffPlan {
-    String _name;
+    private String _name;
 }

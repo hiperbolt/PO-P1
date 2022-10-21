@@ -12,6 +12,6 @@ public class VideoCommunication extends InteractiveCommunication{
      * @param to terminal.
      **/
     public void makeVoiceCall(Terminal to){
-        this._to = to;
+        this.setTo(to);
     }
 }

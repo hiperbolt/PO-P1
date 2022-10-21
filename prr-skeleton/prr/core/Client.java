@@ -15,9 +15,9 @@ public class Client implements Serializable{
     private ClientLevel _level;
     private boolean _receiveNotifications;
     private TariffPlan _tariffPlan;
-    List<Terminal> _terminals;
-    List<Communication> _paidCommunications;
-    List<Communication> _inDebtCommunications;
+    private List<Terminal> _terminals;
+    private List<Communication> _paidCommunications;
+    private List<Communication> _inDebtCommunications;
 
     public Client(String key, String name, int taxNumber) {
         this._key = key;
@@ -54,7 +54,7 @@ public class Client implements Serializable{
     public int calculatePayments() {
         int res = 0;
         for (Communication paidCommunication : _paidCommunications) {
-            res += paidCommunication._cost;
+            res += paidCommunication.getCost();
         }
         return res;
     }
@@ -67,7 +67,7 @@ public class Client implements Serializable{
     public int calculateDebts() {
         int res = 0;
         for (Communication paidCommunication : _inDebtCommunications) {
-            res += paidCommunication._cost;
+            res += paidCommunication.getCost();
         }
         return res;
     }

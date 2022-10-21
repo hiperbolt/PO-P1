@@ -1,7 +1,7 @@
 package prr.core;
 
 public class TextCommunication extends Communication{
-    String _message;
+    private String _message;
 
     // Constructor
     public TextCommunication(Terminal to, Terminal from, String message){

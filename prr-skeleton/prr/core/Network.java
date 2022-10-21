@@ -19,7 +19,7 @@ public class Network implements Serializable {
   private List<Communication> _communications;
   private List<Client> _clients;
   private List<Terminal> _terminals;
-  private List<TariffPlan> _tariffPlans; //FIXME shoud we store the tariff plans in the network?
+  private List<TariffPlan> _tariffPlans;
 
   
   /**
@@ -30,7 +30,8 @@ public class Network implements Serializable {
    * @throws IOException if there is an IO erro while processing the text file
    */
   void importFile(String filename) throws UnrecognizedEntryException, IOException {
-    // FIXME implement importFile method
+    Parser parser = new Parser(this);
+    parser.parseFile(filename);
   }
   public Network(){
     _communications = new ArrayList<Communication>();
