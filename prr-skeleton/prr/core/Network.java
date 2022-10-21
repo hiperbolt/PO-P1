@@ -19,7 +19,7 @@ public class Network implements Serializable {
   private List<Communication> _communications;
   private List<Client> _clients;
   private List<Terminal> _terminals;
-  private List<TariffPlan> _tariffPlans;
+  private List<TariffPlan> _tariffPlans; //FIXME shoud we store the tariff plans in the network?
 
   
   /**
