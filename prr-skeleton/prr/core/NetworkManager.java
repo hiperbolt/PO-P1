@@ -35,6 +35,7 @@ public class NetworkManager {
       FileInputStream fileInputStream = new FileInputStream(filename);
       ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
       _network = (Network) objectInputStream.readObject();
+      this._filename = filename;
       objectInputStream.close();
     } catch (FileNotFoundException e) {
       throw new UnavailableFileException(filename);
@@ -53,11 +54,11 @@ public class NetworkManager {
    * @throws IOException if there is some error while serializing the state of the network to disk.
    */
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
+    if (_filename == null) {
+      throw new MissingFileAssociationException("");
+    }
     try{
-      FileOutputStream fileOut = new FileOutputStream(_filename);
-      ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-      objectOut.writeObject(_network);
-      objectOut.close();
+      saveAs(_filename);;
     } catch (FileNotFoundException e) {
       throw new FileNotFoundException();
     } catch (IOException e) {
