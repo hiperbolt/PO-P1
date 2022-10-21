@@ -20,7 +20,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private double _payments;
   private TerminalMode _mode;
 
-  private List<Terminal> _friends;
+  private ArrayList<Terminal> _friends;
   private Client _owner;
   private List<Communication> _madeCommunications;
   private List<Communication> _receivedCommunications;
@@ -40,6 +40,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     _debt = 0;
     _payments = 0;
     _mode = TerminalMode.ON;
+    _friends = new ArrayList<Terminal>();
     _madeCommunications = new ArrayList<Communication>();
     _receivedCommunications = new ArrayList<Communication>();
     _ongoingCommunication = null;
