@@ -3,6 +3,7 @@ import prr.core.*;
 import prr.app.exception.*;
 import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.InvalidKeyException;
+import prr.core.exception.UnknownKeyException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -24,13 +25,15 @@ class DoRegisterTerminal extends Command<Network> {
       if(stringField("terminalType").equals("FANCY")){
         _receiver.registerTerminal(TerminalType.FANCY, stringField("terminalId"), stringField("ownerID"));
       }
-      else if(_form.stringField("terminalType").equals("BASIC")){
+      else if(stringField("terminalType").equals("BASIC")){
         _receiver.registerTerminal(TerminalType.BASIC, stringField("terminalId"), stringField("ownerID"));
       }
     } catch (DuplicateKeyException e) {
       throw new DuplicateTerminalKeyException(stringField("terminalId"));
     } catch (InvalidKeyException e) {
       throw new InvalidTerminalKeyException(stringField("terminalId"));
+    } catch (UnknownKeyException e){
+      throw new UnknownClientKeyException(stringField("ownerID"));
     }
   }
 }

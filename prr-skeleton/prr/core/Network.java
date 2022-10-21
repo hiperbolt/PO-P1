@@ -2,8 +2,10 @@ package prr.core;
 
 import java.io.Serializable;
 import java.io.IOException;
+
 import prr.core.exception.InvalidKeyException;
 import prr.core.exception.DuplicateKeyException;
+import prr.core.exception.UnknownKeyException;
 import prr.core.exception.UnrecognizedEntryException;
 
 import java.util.ArrayList;
@@ -71,12 +73,12 @@ public class Network implements Serializable {
      * @return Terminal - The newly created terminal object.
      * @throws DuplicateKeyException - If the provided terminal key already exists.
      */
-  public Terminal registerTerminal(TerminalType type, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException {
+  public Terminal registerTerminal(TerminalType type, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException, UnknownKeyException {
     Terminal _returnTerminal = null;
 
     // First, we check if the terminal id is in a valid format (if its length is at least 6 and if it contains only numbers).
     if(id.length() < 6 || !id.matches("[0-9]+")){
-      throw new InvalidKeyException();
+      throw new InvalidKeyException(id);
     }
 
     // We check if the terminal already exists, and throw an exception if it does.
@@ -84,6 +86,12 @@ public class Network implements Serializable {
       if(terminal.getId().equals(id)){
         throw new DuplicateKeyException();
       }
+    }
+
+    // We check the Client exists.
+    Client owner = clientById(ownerId);
+    if (owner == null){
+      throw new UnknownKeyException(ownerId);
     }
 
     // With all checks passed, we create the terminal and add it to the Network.

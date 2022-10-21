@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.InvalidKeyException;
+import prr.core.exception.UnknownKeyException;
 import prr.core.exception.UnrecognizedEntryException;
 // import more exception core classes if needed
 
@@ -83,7 +84,7 @@ public class Parser {
             throw new UnrecognizedEntryException("Invalid specification in line: " + line);
         }
       }
-    } catch (InvalidKeyException | DuplicateKeyException e) {
+    } catch (InvalidKeyException | DuplicateKeyException | UnknownKeyException e) {
       throw new UnrecognizedEntryException("Invalid specification: " + line, e);
     }
   }
