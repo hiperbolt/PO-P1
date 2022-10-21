@@ -21,7 +21,7 @@ import pt.tecnico.uilib.menus.Menu;
 public class TextInteraction implements InteractionDriver {
 
   /** Input channel. */
-  private BufferedReader _in = new BufferedReader(new InputStreamReader(System.in));;
+  private BufferedReader _in = new BufferedReader(new InputStreamReader(System.in));
 
   /** Output channel. */
   private PrintStream _out = System.out;

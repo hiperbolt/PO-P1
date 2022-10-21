@@ -12,7 +12,7 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoOpenFile extends Command<NetworkManager> {
 
-  DoOpenFile(NetworkManager receiver) {
+  DoOpenFile(NetworkManager receiver)  {
     super(Label.OPEN_FILE, receiver);
     //FIXME add command fields
   }

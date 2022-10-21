@@ -5,14 +5,11 @@ package pt.tecnico.uilib.menus;
  */
 public class DoOpenMenu extends Command<Menu> {
 
-  /**
-   * @param receiver
-   */
   public DoOpenMenu(String label, Menu receiver) {
     super(label, receiver);
   }
 
-  /** @see pt.tecnico.po.ui.Command#execute() */
+  // @see pt.tecnico.po.ui.Command#execute()
   @Override
   protected final void execute() {
     _receiver.open();

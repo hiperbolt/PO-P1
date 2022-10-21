@@ -94,7 +94,8 @@ public class NetworkManager {
    * Read text input file and create domain entities..
    * 
    * @param filename name of the text input file
-   * @throws ImportFileException
+   *
+   * @throws ImportFileException - In case something goes wrong wit the file importing.
    */
   public void importFile(String filename) throws ImportFileException {
     try {

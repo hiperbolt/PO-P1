@@ -4,7 +4,6 @@ import prr.core.Network;
 import prr.core.Terminal;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Show unused terminals (without communications).

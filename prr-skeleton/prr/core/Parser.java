@@ -8,10 +8,12 @@ import java.io.BufferedReader;
 import java.util.Collection;
 import java.util.ArrayList;
 
+import prr.core.exception.DuplicateKeyException;
+import prr.core.exception.InvalidKeyException;
 import prr.core.exception.UnrecognizedEntryException;
 // import more exception core classes if needed
 
-/* 
+/*
  * A concretização desta classe depende da funcionalidade suportada pelas entidades do core:
  *  - adicionar um cliente e terminal a uma rede de terminais;
  *  - indicar o estado de um terminal
@@ -30,12 +32,12 @@ public class Parser {
   void parseFile(String filename) throws IOException, UnrecognizedEntryException {
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
       String line;
-      
+
       while ((line = reader.readLine()) != null)
         parseLine(line);
     }
   }
-  
+
   private void parseLine(String line) throws UnrecognizedEntryException {
     String[] components = line.split("\\|");
 
@@ -51,7 +53,7 @@ public class Parser {
     if (components.length != expectedSize)
       throw new UnrecognizedEntryException("Invalid number of fields in line: " + line);
   }
-  
+
   // parse a client with format CLIENT|id|nome|taxId
   private void parseClient(String[] components, String line) throws UnrecognizedEntryException {
     checkComponentsLength(components, 4, line);
@@ -61,7 +63,7 @@ public class Parser {
       _network.registerClient(components[1], components[2], taxNumber);
     } catch (NumberFormatException nfe) {
       throw new UnrecognizedEntryException("Invalid number in line " + line, nfe);
-    } catch (OtherException e) {
+    } catch (DuplicateKeyException e) {
       throw new UnrecognizedEntryException("Invalid specification in line: " + line, e);
     }
   }
@@ -71,16 +73,16 @@ public class Parser {
     checkComponentsLength(components, 4, line);
 
     try {
-      Terminal terminal = _network.registerTerminal(components[0], components[1], components[2]);
+      Terminal terminal = _network.registerTerminal(TerminalType.valueOf(components[0]), components[1], components[2]);
       switch(components[3]) {
         case "SILENCE" -> terminal.setOnSilent();
         case "OFF" -> terminal.turnOff();
         default -> {
-         if (!components[3].equals("ON"))
-           throw new UnrecognizedEntryException("Invalid specification in line: " + line);
-        } 
+          if (!components[3].equals("ON"))
+            throw new UnrecognizedEntryException("Invalid specification in line: " + line);
+        }
       }
-    } catch (SomeOtherException e) {
+    } catch (InvalidKeyException | DuplicateKeyException e) {
       throw new UnrecognizedEntryException("Invalid specification: " + line, e);
     }
   }
@@ -88,14 +90,14 @@ public class Parser {
   //Parse a line with format FRIENDS|idTerminal|idTerminal1,...,idTerminalN
   private void parseFriends(String[] components, String line) throws UnrecognizedEntryException {
     checkComponentsLength(components, 3, line);
-      
+
     try {
       String terminal = components[1];
       String[] friends = components[2].split(",");
-      
+
       for (String friend : friends)
-        _terminal.addFriend(terminal, friend);
-    } catch (OtherException e) {
+        _network.addFriend(terminal, friend);
+    } catch (Exception e) {
       throw new UnrecognizedEntryException("Some message error in line:  " + line, e);
     }
   }

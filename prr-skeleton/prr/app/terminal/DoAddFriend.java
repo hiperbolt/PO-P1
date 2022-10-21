@@ -18,6 +18,7 @@ class DoAddFriend extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    _terminal.addFriend(stringField("terminalId"));
+    Terminal friend = _network.terminalById(stringField("terminalId"));
+    _terminal.addFriend(friend);
   }
 }

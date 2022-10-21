@@ -8,10 +8,9 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show all clients.
  */
 class DoShowAllClients extends Command<Network> {
-  Network _receiver;
+
   DoShowAllClients(Network receiver) {
     super(Label.SHOW_ALL_CLIENTS, receiver);
-    _receiver = receiver;
   }
   
   @Override

@@ -9,8 +9,6 @@ import prr.core.exception.UnrecognizedEntryException;
 import java.util.ArrayList;
 import java.util.List;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Class Store implements a store.
  */
@@ -22,10 +20,7 @@ public class Network implements Serializable {
   private List<Client> _clients;
   private List<Terminal> _terminals;
   private List<TariffPlan> _tariffPlans;
-  
-  // FIXME define attributes
-  // FIXME define contructor(s)
-  // FIXME define methods
+
   
   /**
    * Read text input file and create corresponding domain entities.
@@ -67,13 +62,17 @@ public class Network implements Serializable {
 
     /**
      * Register new terminal.
-     * @param type - Terminal type
-     * @param id - Terminal ID
-     * @param owner - Owner client's ID
      *
+     * @param type  - Terminal type
+     * @param id    - Terminal ID
+     * @param ownerId - Owner client's ID
+     *
+     * @return Terminal - The newly created terminal object.
      * @throws DuplicateKeyException - If the provided terminal key already exists.
      */
-  public void registerTerminal(TerminalType type, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException {
+  public Terminal registerTerminal(TerminalType type, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException {
+    Terminal _returnTerminal = null;
+
     // First, we check if the terminal id is in a valid format (if its length is at least 6 and if it contains only numbers).
     if(id.length() < 6 || !id.matches("[0-9]+")){
       throw new InvalidKeyException();
@@ -90,11 +89,14 @@ public class Network implements Serializable {
     if(type == TerminalType.BASIC){
       Terminal t = new BasicTerminal(id, clientById(ownerId));
       _terminals.add(t);
+      _returnTerminal = t;
     }
     else if(type == TerminalType.FANCY){
       Terminal t = new FancyTerminal(id, clientById(ownerId));
       _terminals.add(t);
+      _returnTerminal = t;
     }
+    return _returnTerminal;
   }
 
   public boolean clientExists(String id){
@@ -154,10 +156,11 @@ public class Network implements Serializable {
     return unusedTerminals;
   }
 
-  public List<Terminal> getClientsWithDebt(){
-
+  public void addFriend(String terminalId, String friend) {
+    Terminal _targetTerminal = terminalById(terminalId);
+    Terminal _friendTerminal = terminalById(friend);
+    _targetTerminal.addFriend(_friendTerminal);
   }
-
 }
 
 

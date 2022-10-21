@@ -1,6 +1,6 @@
 package prr.core;
 
-import prr.core.Notification.Notification;
+import prr.core.notification.Notification;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +21,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private double _payments;
   private TerminalMode _mode;
 
-  List<String> _friends;
+  List<Terminal> _friends;
   private Client _owner;
   List<Communication> _madeCommunications;
   List<Communication> _receivedCommunications;
@@ -34,9 +34,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
    *
    * @param id - Terminal key
    * @param owner - Owner client's id
-   *
-   * @throws InvalidTerminalKeyException - If the provided terminal key is in an invalid format.
-   * @throws DuplicateTerminalKeyException - If the provided terminal key already exists.
    */
   public Terminal(String id, Client owner){
     _id = id;
@@ -72,7 +69,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
    *
    * @param communication Received communication.
    **/
-  protected void acceptSMS(Communication communication){ // FIXME O stor diz que deve receber Terminal from, mas faz sentido receber a comunicação em si.
+  protected void acceptSMS(Communication communication){
     // A terminal can only *not* receive an SMS when it is off, so we check for that.
     // FIXME maybe raise an exception?
     if(this._mode != TerminalMode.OFF) {
@@ -149,11 +146,11 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     return _id;
   }
   public boolean removeFriend(String friendId){
-    return _friends.removeIf(t -> t.equals(friendId));
+    return _friends.removeIf(t -> t.getId().equals(friendId));
   }
 
-  public boolean addFriend(String friendId){
-    return _friends.add(friendId);
+  public boolean addFriend(Terminal friend){
+    return _friends.add(friend);
   }
 
   public boolean isUnused(){
@@ -164,7 +161,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   }
 
   // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-  // FIXME garantir que a função só se aplica aos filhos de Terminal
 
   public String toString(){
     String terminalType = "";
@@ -207,5 +203,9 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
     return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + "|" + friends;
   };
+
+  public int getBalance() {
+    return 0; // Temporary while balances and communications are not implemented.
+  }
 
 }
