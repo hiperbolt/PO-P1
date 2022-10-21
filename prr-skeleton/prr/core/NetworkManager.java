@@ -106,6 +106,7 @@ public class NetworkManager {
     } catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
       throw new ImportFileException(filename, e);
     }
+    _filename = filename;
   }  
 
   public boolean hasFile() {

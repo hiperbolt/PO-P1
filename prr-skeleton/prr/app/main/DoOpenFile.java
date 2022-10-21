@@ -24,6 +24,7 @@ class DoOpenFile extends Command<NetworkManager> {
       try {
       _receiver.load(Form.requestString("Nome do ficheiro?"));
       } catch (UnavailableFileException e) {
+          throw new FileOpenFailedException(e);
       }
   }
 }

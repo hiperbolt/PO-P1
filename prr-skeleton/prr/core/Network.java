@@ -66,15 +66,22 @@ public class Network implements Serializable {
     /**
      * Register new terminal.
      *
-     * @param type  - Terminal type
+     * @param ttype  - Terminal type
      * @param id    - Terminal ID
      * @param ownerId - Owner client's ID
      *
      * @return Terminal - The newly created terminal object.
      * @throws DuplicateKeyException - If the provided terminal key already exists.
      */
-  public Terminal registerTerminal(TerminalType type, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException, UnknownKeyException {
-    Terminal _returnTerminal = null;
+  public Terminal registerTerminal(String ttype, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException, UnknownKeyException, UnrecognizedEntryException {
+    Terminal returnTerminal = null;
+    TerminalType processedType = null;
+
+    switch(ttype) {
+      case "BASIC" -> processedType = TerminalType.BASIC;
+      case "FANCY" -> processedType = TerminalType.FANCY;
+      default -> throw new UnrecognizedEntryException(ttype);
+    }
 
     // First, we check if the terminal id is in a valid format (if its length is at least 6 and if it contains only numbers).
     if(id.length() < 6 || !id.matches("[0-9]+")){
@@ -95,17 +102,28 @@ public class Network implements Serializable {
     }
 
     // With all checks passed, we create the terminal and add it to the Network.
-    if(type == TerminalType.BASIC){
+    if(processedType == TerminalType.BASIC){
       Terminal t = new BasicTerminal(id, clientById(ownerId));
       _terminals.add(t);
-      _returnTerminal = t;
+      returnTerminal = t;
     }
-    else if(type == TerminalType.FANCY){
+    else if(processedType == TerminalType.FANCY){
       Terminal t = new FancyTerminal(id, clientById(ownerId));
       _terminals.add(t);
-      _returnTerminal = t;
+      returnTerminal = t;
     }
-    return _returnTerminal;
+    return returnTerminal;
+  }
+
+  void registerTerminalWithStatus(String ttype, String id, String ownerId, String status) throws UnrecognizedEntryException, InvalidKeyException, DuplicateKeyException, UnknownKeyException {
+    Terminal t = registerTerminal(ttype, id, ownerId);
+    switch (status){
+      case "ON" -> t.setOnIdle();
+      case "OFF"-> t.turnOff();
+      case "SILENCE" -> t.setOnSilent();
+      default -> throw new UnrecognizedEntryException(status);
+    }
+    _terminals.add(t);
   }
 
   public boolean clientExists(String id){

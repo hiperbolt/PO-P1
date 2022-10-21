@@ -15,7 +15,6 @@ public class Client implements Serializable{
     private int _taxNumber;
     private ClientLevel _level;
     private boolean _receiveNotifications;
-    private TariffPlan _tariffPlan;
     private List<Terminal> _terminals;
     private List<Communication> _paidCommunications;
     private List<Communication> _inDebtCommunications;
@@ -29,7 +28,6 @@ public class Client implements Serializable{
         this._taxNumber = taxNumber;
         this._level = ClientLevel.NORMAL;
         this._receiveNotifications = true;
-        this._tariffPlan = new BasicPlan(); // Temporary since there is only one tariff plan.
     }
 
 
@@ -85,7 +83,7 @@ public class Client implements Serializable{
     public String toString() {
         // CLIENT|key|name|taxId|type|receiveNotifications|tariffPlan|terminals|payments|debts
         String notifications = _receiveNotifications ? "YES" : "NO";
-        String res = "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + _tariffPlan.getPlanType() + "|" + this.getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
+        String res = "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + this.getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
         return res;
     }
 }
