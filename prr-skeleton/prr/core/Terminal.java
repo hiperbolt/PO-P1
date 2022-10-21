@@ -205,7 +205,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     friends = "";
   }
     return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + "|" + friends;
-  };
+  }
 
   public int getBalance() {
     return 0; // Temporary while balances and communications are not implemented.

@@ -42,10 +42,11 @@ public class Parser {
     String[] components = line.split("\\|");
 
     switch(components[0]) {
-      case "CLIENT" -> parseClient(components, line);
-      case "BASIC", "FANCY" -> parseTerminal(components, line);
-      case "FRIENDS" -> parseFriends(components, line);
-      default -> throw new UnrecognizedEntryException("Line with wong type: " + components[0]);
+      case "CLIENT" : parseClient(components, line);
+      case "BASIC": parseTerminal(components, line);
+      case "FANCY": parseTerminal(components, line);
+      case "FRIENDS": parseFriends(components, line);
+      default: throw new UnrecognizedEntryException("Line with wong type: " + components[0]);
     }
   }
 
@@ -75,9 +76,9 @@ public class Parser {
     try {
       Terminal terminal = _network.registerTerminal(TerminalType.valueOf(components[0]), components[1], components[2]);
       switch(components[3]) {
-        case "SILENCE" -> terminal.setOnSilent();
-        case "OFF" -> terminal.turnOff();
-        default -> {
+        case "SILENCE": terminal.setOnSilent();
+        case "OFF": terminal.turnOff();
+        default: {
           if (!components[3].equals("ON"))
             throw new UnrecognizedEntryException("Invalid specification in line: " + line);
         }
