@@ -3,8 +3,10 @@ package prr.core;
 import prr.core.notification.Notification;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 
 /**
@@ -20,7 +22,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private double _payments;
   private TerminalMode _mode;
 
-  private ArrayList<Terminal> _friends;
+  private Set<Terminal> _friends;
   private Client _owner;
   private List<Communication> _madeCommunications;
   private List<Communication> _receivedCommunications;
@@ -40,7 +42,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     _debt = 0;
     _payments = 0;
     _mode = TerminalMode.ON;
-    _friends = new ArrayList<Terminal>();
+    _friends = new HashSet<Terminal>();
     _madeCommunications = new ArrayList<Communication>();
     _receivedCommunications = new ArrayList<Communication>();
     _ongoingCommunication = null;
@@ -146,6 +148,10 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     return _id;
   }
   public boolean removeFriend(String friendId){
+    if (_friends.isEmpty()){
+      return false;
+    }
+
     return _friends.removeIf(t -> t.getId().equals(friendId));
   }
 
@@ -210,6 +216,10 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
   public int getBalance() {
     return 0; // Temporary while balances and communications are not implemented.
+  }
+
+  public TerminalMode getMode(){
+    return _mode;
   }
 
 }

@@ -1,5 +1,6 @@
 package prr.app.terminal;
 
+import prr.app.exception.UnknownTerminalKeyException;
 import prr.core.Network;
 import prr.core.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
@@ -19,6 +20,9 @@ class DoAddFriend extends TerminalCommand {
   @Override
   protected final void execute() throws CommandException {
     Terminal friend = _network.terminalById(stringField("terminalId"));
+    if(friend == null){
+      throw new UnknownTerminalKeyException(stringField("terminalId"));
+    }
     _terminal.addFriend(friend);
   }
 }
