@@ -22,10 +22,10 @@ class DoRegisterTerminal extends Command<Network> {
     // We try to register the terminal, and catch the exceptions if they occur, then throw our own exception.
     try {
       if(stringField("terminalType").equals("FANCY")){
-        _receiver.registerTerminal(TerminalType.FANCY, stringField("terminalId"), stringField("ownerId"));
+        _receiver.registerTerminal(TerminalType.FANCY, stringField("terminalId"), stringField("ownerID"));
       }
       else if(_form.stringField("terminalType").equals("BASIC")){
-        _receiver.registerTerminal(TerminalType.BASIC, stringField("terminalId"), stringField("ownerId"));
+        _receiver.registerTerminal(TerminalType.BASIC, stringField("terminalId"), stringField("ownerID"));
       }
     } catch (DuplicateKeyException e) {
       throw new DuplicateTerminalKeyException(stringField("terminalId"));

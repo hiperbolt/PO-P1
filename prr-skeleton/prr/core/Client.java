@@ -1,6 +1,7 @@
 package prr.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,9 @@ public class Client implements Serializable{
     private List<Communication> _inDebtCommunications;
 
     public Client(String key, String name, int taxNumber) {
+        this._terminals = new ArrayList<Terminal>();
+        this._paidCommunications = new ArrayList<Communication>();
+        this._inDebtCommunications = new ArrayList<Communication>();
         this._key = key;
         this._name = name;
         this._taxNumber = taxNumber;
@@ -53,9 +57,6 @@ public class Client implements Serializable{
      */
     public int calculatePayments() {
         int res = 0;
-        if (_paidCommunications.isEmpty()){
-            return 0;
-        }
         for (Communication paidCommunication : _paidCommunications) {
             res += paidCommunication.getCost();
         }
@@ -69,20 +70,22 @@ public class Client implements Serializable{
      */
     public int calculateDebts() {
         int res = 0;
-        if (_inDebtCommunications.isEmpty()){
-            return 0;
-        }
         for (Communication paidCommunication : _inDebtCommunications) {
             res += paidCommunication.getCost();
         }
         return res;
     }
-
+    public int getTerminalsSize(){
+        if (_terminals == null){
+            return 0;
+        }
+        return _terminals.size();
+    }
 
     public String toString() {
         // CLIENT|key|name|taxId|type|receiveNotifications|tariffPlan|terminals|payments|debts
         String notifications = _receiveNotifications ? "YES" : "NO";
-        String res = "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + _tariffPlan + "|" + _terminals.size() + "|" + calculatePayments() + "|" + calculateDebts();
+        String res = "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + _tariffPlan + "|" + this.getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
         return res;
     }
 }

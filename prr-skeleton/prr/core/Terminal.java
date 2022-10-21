@@ -177,29 +177,33 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     String friends = "";
 
     // Now we sort terminal friends by growing id
-    ArrayList<Terminal> sortedFriends = new ArrayList<Terminal>();
-    for (Terminal friend : this._friends){
-      if (sortedFriends.isEmpty()){
-        sortedFriends.add(friend);
-      }
-      else {
-        for (int i = 0; i < sortedFriends.size(); i++){
-          if (friend._id.compareTo(sortedFriends.get(i)._id) < 0){
-            sortedFriends.add(i, friend);
-            break;
-          }
-          else if (i == sortedFriends.size() - 1){
-            sortedFriends.add(friend);
-            break;
+    if (!_friends.isEmpty()){
+      ArrayList<Terminal> sortedFriends = new ArrayList<Terminal>();
+      for (Terminal friend : this._friends){
+        if (sortedFriends.isEmpty()){
+          sortedFriends.add(friend);
+        }
+        else {
+          for (int i = 0; i < sortedFriends.size(); i++){
+            if (friend._id.compareTo(sortedFriends.get(i)._id) < 0){
+              sortedFriends.add(i, friend);
+              break;
+            }
+            else if (i == sortedFriends.size() - 1){
+              sortedFriends.add(friend);
+              break;
+            }
           }
         }
       }
+      for (Terminal friend : sortedFriends){
+        friends += friend._id + ",";
+      }
+      friends = friends.substring(0, friends.length() - 1);
     }
-    for (Terminal friend : sortedFriends){
-      friends += friend._id + ",";
-    }
-    friends = friends.substring(0, friends.length() - 1);
-
+  else{
+    friends = "";
+  }
     return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + "|" + friends;
   };
 
