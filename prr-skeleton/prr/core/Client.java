@@ -83,7 +83,13 @@ public class Client implements Serializable{
     public String toString() {
         // CLIENT|key|name|taxId|type|receiveNotifications|tariffPlan|terminals|payments|debts
         String notifications = _receiveNotifications ? "YES" : "NO";
-        String res = "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + this.getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
+        String res = "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
         return res;
+    }
+
+    public void addTerminal(Terminal t) {
+        if (t != null){
+            _terminals.add(t);
+        }
     }
 }

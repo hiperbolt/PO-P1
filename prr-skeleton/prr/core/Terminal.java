@@ -186,7 +186,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     }
     String terminalId = this._id;
     String clientId = this._owner.getKey();
-    String terminalStatus = this._mode.toString();
+    String terminalStatus;
+    if (_mode == TerminalMode.ON){
+      terminalStatus = "IDLE";
+    } else {
+      terminalStatus = this._mode.toString();
+    }
     String balancePaid = Integer.toString(this.getBalancePaid());
     String balanceDebts = Integer.toString(this.getBalanceDebt());
     String friends = "";
@@ -194,6 +199,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     // Now we sort terminal friends by growing id
     if (!_friends.isEmpty()){
       ArrayList<Terminal> sortedFriends = new ArrayList<Terminal>();
+
       for (Terminal friend : this._friends){
         if (sortedFriends.isEmpty()){
           sortedFriends.add(friend);
@@ -214,12 +220,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
       for (Terminal friend : sortedFriends){
         friends += friend._id + ",";
       }
-      friends = friends.substring(0, friends.length() - 1);
+      friends = "|" + friends.substring(0, friends.length() - 1);
     }
   else{
     friends = "";
   }
-    return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + "|" + friends;
+    return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + friends;
   }
 
   public int getBalance() {

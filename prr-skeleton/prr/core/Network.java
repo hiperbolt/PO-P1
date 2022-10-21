@@ -112,6 +112,10 @@ public class Network implements Serializable {
       _terminals.add(t);
       returnTerminal = t;
     }
+
+    // We add the terminal to its owner's list of terminals.
+    owner.addTerminal(returnTerminal);
+
     return returnTerminal;
   }
 
