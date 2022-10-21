@@ -22,7 +22,7 @@ class DoOpenFile extends Command<NetworkManager> {
   protected final void execute() throws CommandException {
     // FIXME what should we do with catches?
       try {
-      _receiver.load(Form.requestString("Nome do ficheiro?"));
+      _receiver.load(Form.requestString(Message.openFile()));
       } catch (UnavailableFileException e) {
           throw new FileOpenFailedException(e);
       }
