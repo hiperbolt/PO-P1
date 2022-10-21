@@ -14,6 +14,7 @@ class DoSaveFile extends Command<NetworkManager> {
   private NetworkManager _receiver;
   DoSaveFile(NetworkManager receiver) {
     super(Label.SAVE_FILE, receiver);
+    _receiver = receiver;
   }
   
   @Override
