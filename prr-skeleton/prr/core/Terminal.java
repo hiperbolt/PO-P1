@@ -166,6 +166,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     return false;
   }
 
+  public int getBalancePaid(){
+    return (int) Math.round(_payments);
+  }
+
+  public int getBalanceDebt(){
+    return (int) Math.round(_debt);
+  }
+
   // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
 
   public String toString(){
@@ -179,8 +187,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     String terminalId = this._id;
     String clientId = this._owner.getKey();
     String terminalStatus = this._mode.toString();
-    String balancePaid = Double.toString(this._payments);
-    String balanceDebts = Double.toString(this._debt);
+    String balancePaid = Integer.toString(this.getBalancePaid());
+    String balanceDebts = Integer.toString(this.getBalanceDebt());
     String friends = "";
 
     // Now we sort terminal friends by growing id
