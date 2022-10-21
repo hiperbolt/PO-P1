@@ -6,9 +6,9 @@ import java.io.Serializable;
  * Basic Tariff Plan extending the abstract Tariff Plan.
  */
 public class BasicPlan extends TariffPlan implements Serializable{
-    private final String _planType = "BasicPlan";
 
     public String getPlanType(){
+        String _planType = "BasicPlan";
         return _planType;
     }
 }

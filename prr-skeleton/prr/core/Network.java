@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class Store implements a store.
+ * Class Network implements a network.
  */
 public class Network implements Serializable {
 
@@ -20,6 +20,8 @@ public class Network implements Serializable {
   private static final long serialVersionUID = 202208091753L;
   private List<Communication> _communications;
   private List<Client> _clients;
+
+  // Should eventually be a Set to prevent duplication.
   private List<Terminal> _terminals;
   private List<TariffPlan> _tariffPlans;
 
@@ -75,7 +77,7 @@ public class Network implements Serializable {
      */
   public Terminal registerTerminal(String ttype, String id, String ownerId) throws DuplicateKeyException, InvalidKeyException, UnknownKeyException, UnrecognizedEntryException {
     Terminal returnTerminal = null;
-    TerminalType processedType = null;
+    TerminalType processedType;
 
     switch(ttype) {
       case "BASIC" -> processedType = TerminalType.BASIC;
@@ -119,6 +121,19 @@ public class Network implements Serializable {
     return returnTerminal;
   }
 
+  /**
+   * Register terminal and set its status.
+   *
+   * @param ttype - Terminal type (in TerminalType format)
+   * @param id - Terminal id
+   * @param ownerId - Owner client's id
+   * @param status - Terminal status (TerminalMode)
+   *
+   * @throws UnrecognizedEntryException - If the provided terminal type is not recognized.
+   * @throws InvalidKeyException - If the provided terminal id is not valid.
+   * @throws DuplicateKeyException - If the provided terminal key already exists.
+   * @throws UnknownKeyException - If the provided owner id does not exist.
+   */
   void registerTerminalWithStatus(String ttype, String id, String ownerId, String status) throws UnrecognizedEntryException, InvalidKeyException, DuplicateKeyException, UnknownKeyException {
     Terminal t = registerTerminal(ttype, id, ownerId);
     switch (status){
@@ -130,6 +145,12 @@ public class Network implements Serializable {
     _terminals.add(t);
   }
 
+  /**
+   * Check if a client with the provided id exists.
+   *
+   * @param id - Client id
+   * @return True if the client exists, false otherwise.
+   */
   public boolean clientExists(String id){
     for (Client c : _clients){
       if (c.getKey().equals(id)){
@@ -138,6 +159,13 @@ public class Network implements Serializable {
     }
     return false;
   }
+
+  /**
+   * Check if a terminal with the provided id exists.
+   *
+   * @param id - terminal id
+   * @return True if the terminal exists, false otherwise.
+   */
   public boolean terminalExists(String id){
     for (Terminal t : _terminals){
       if (t.getId().equals(id)){
@@ -147,6 +175,12 @@ public class Network implements Serializable {
     return false;
   }
 
+    /**
+     * Get a client by its id.
+     *
+     * @param id - Client id
+     * @return Client - The client with the provided id.
+     */
   public Client clientById(String id){
     for (Client c : _clients){
       if (c.getKey().equals(id)){
@@ -156,6 +190,12 @@ public class Network implements Serializable {
     return null;
   }
 
+    /**
+     * Get a terminal by its id.
+     *
+     * @param id - Terminal id
+     * @return Terminal - The terminal with the provided id.
+     */
   public Terminal terminalById(String id){
     for (Terminal t : _terminals){
       if (t.getId().equals(id)){
@@ -165,18 +205,36 @@ public class Network implements Serializable {
     return null;
   }
 
+  /**
+   * Get all terminals.
+   * @return List<Terminal> - List of all terminals.
+   */
   public List<Terminal> getAllTerminals(){
     return _terminals;
   }
 
+    /**
+     * Get all clients.
+     * @return List<Client> - List of all clients.
+     */
   public List<Client> getAllClients(){
     return _clients;
   }
 
+  /**
+   * Get all communications.
+   *
+   * @return List<Communication> - List of all communications.
+   */
   public List<Communication> getAllCommunications(){
     return _communications;
   }
 
+  /**
+   * Get unused terminals (terminals which have neither received nor made any communication).
+   *
+   * @return List<Terminal> - List of all unused terminals.
+   */
   public List<Terminal> getUnusedTerminals(){
     List<Terminal> unusedTerminals = new ArrayList<>();
     for(Terminal t : _terminals){
@@ -187,6 +245,12 @@ public class Network implements Serializable {
     return unusedTerminals;
   }
 
+  /**
+   * Add a terminal friend.
+   *
+   * @param terminalId - Terminal id
+   * @param friend - Friend terminal id
+   */
   public void addFriend(String terminalId, String friend) {
     Terminal _targetTerminal = terminalById(terminalId);
     Terminal _friendTerminal = terminalById(friend);

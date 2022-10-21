@@ -1,12 +1,8 @@
 package prr.core;
 
-import java.io.Reader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
-
-import java.util.Collection;
-import java.util.ArrayList;
 
 import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.InvalidKeyException;
@@ -44,8 +40,7 @@ public class Parser {
 
     switch(components[0]) {
       case "CLIENT" -> parseClient(components, line);
-      case "BASIC" -> parseTerminal(components, line);
-      case "FANCY" -> parseTerminal(components, line);
+      case "BASIC", "FANCY" -> parseTerminal(components, line);
       case "FRIENDS" -> parseFriends(components, line);
       default -> throw new UnrecognizedEntryException("Line with wong type: " + components[0]);
     }

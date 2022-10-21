@@ -87,10 +87,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
    *          it was the originator of this communication.
    **/
   public boolean canEndCurrentCommunication() {
-    if (_mode == TerminalMode.BUSY && this._ongoingCommunication.getFrom() == this){
-      return true;
-    }
-    return false;
+    return _mode == TerminalMode.BUSY && this._ongoingCommunication.getFrom() == this;
   }
   
   /**
@@ -99,10 +96,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
    * @return true if this terminal is neither off neither busy, false otherwise.
    **/
   public boolean canStartCommunication() {
-    if (_mode != TerminalMode.OFF && _mode != TerminalMode.BUSY){
-      return true;
-    }
-    return false;
+    return _mode != TerminalMode.OFF && _mode != TerminalMode.BUSY;
   }
 
   /**
@@ -160,10 +154,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   }
 
   public boolean isUnused(){
-    if (_madeCommunications.isEmpty() && _receivedCommunications.isEmpty()){
-      return true;
-    }
-    return false;
+    return _madeCommunications.isEmpty() && _receivedCommunications.isEmpty();
   }
 
   public int getBalancePaid(){

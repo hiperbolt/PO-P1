@@ -9,10 +9,4 @@ public class BasicTerminal extends Terminal{
 
 
     }
-    public boolean isBasic(){
-        return true;
-    }
-    public boolean isFancy(){
-        return false;
-    } 
 }

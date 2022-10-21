@@ -58,7 +58,7 @@ public class NetworkManager {
       throw new MissingFileAssociationException("");
     }
     try{
-      saveAs(_filename);;
+      saveAs(_filename);
     } catch (FileNotFoundException e) {
       throw new FileNotFoundException();
     } catch (IOException e) {
