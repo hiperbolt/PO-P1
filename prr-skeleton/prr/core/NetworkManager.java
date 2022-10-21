@@ -112,4 +112,8 @@ public class NetworkManager {
   public boolean hasFile() {
     return _filename != null;
   }
+
+  public String getFilename() {
+    return _filename;
+  }
 }

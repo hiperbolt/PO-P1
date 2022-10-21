@@ -20,22 +20,17 @@ class DoSaveFile extends Command<NetworkManager> {
   }
   
   @Override
-  protected final void execute()  throws CommandException{
-    // FIXME what should we do with catches?
-    
+  protected final void execute()  throws FileOpenFailedException{
     try {
-      _receiver.save();
-    } catch (FileNotFoundException ignored) {
-    } catch (IOException e) {
-      throw new FileOpenFailedException(e);
-    } catch (MissingFileAssociationException e) {
-      try{;
+      if (_receiver.getFilename() != null){
+        _receiver.save();
+      } else {
         _receiver.saveAs(Form.requestString(Message.newSaveAs()));
-      } catch (FileNotFoundException e1) {
-        throw new FileOpenFailedException(e1);
-      } catch (IOException e1) {
-        throw new FileOpenFailedException(e);
       }
+    } catch (MissingFileAssociationException | IOException e) {
+      throw new FileOpenFailedException(e);
     }
+    }
+
+
   }
-}
