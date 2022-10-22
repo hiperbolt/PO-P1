@@ -220,7 +220,35 @@ public class Network implements Serializable {
   public List<Client> getAllClients(){
     return _clients;
   }
+  /**
+   * Get all String Clients with debts.
+   *
+   * @return List<String> - List of all clients to string.
+   */
+  public List<String> getAllClientsWithDebts(){
+    List<String> returnList = new ArrayList<>();
+    for (Client c : _clients){
+      if (c.calculateDebts() > 0){
+        returnList.add(c.toString());
+      }
+    }
+    return returnList;
+  }
 
+  /**
+   * Get all String Clients with debts.
+   *
+   * @return List<String> - List of all clients to string.
+   */
+  public List<String> getAllClientsWithoutDebts(){
+    List<String> returnList = new ArrayList<>();
+    for (Client c : _clients){
+      if (c.calculateDebts() < 0){
+        returnList.add(c.toString());
+      }
+    }
+    return returnList;
+  }
   /**
    * Get all communications.
    *
