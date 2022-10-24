@@ -7,6 +7,7 @@ import prr.core.exception.InvalidKeyException;
 import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.UnknownKeyException;
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.notification.NotificationType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -284,6 +285,6 @@ public class Network implements Serializable {
     Terminal _friendTerminal = terminalById(friend);
     _targetTerminal.addFriend(_friendTerminal);
   }
-}
 
+}
 

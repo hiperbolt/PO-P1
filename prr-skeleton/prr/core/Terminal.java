@@ -1,6 +1,7 @@
 package prr.core;
 
 import prr.core.notification.Notification;
+import prr.core.notification.NotificationType;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import java.util.Set;
 /**
  * Abstract Terminal.
  */
-abstract public class Terminal implements Serializable /* FIXME maybe add more interfaces */{
+abstract public class Terminal implements Serializable {
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
@@ -27,7 +28,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   private List<Communication> _madeCommunications;
   private List<Communication> _receivedCommunications;
   private Communication _ongoingCommunication;
-  private List<Notification> _toNotify;
+  private List<CommunicationAttempt> _toNotify;
 
 
   /**
@@ -46,7 +47,20 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     _madeCommunications = new ArrayList<Communication>();
     _receivedCommunications = new ArrayList<Communication>();
     _ongoingCommunication = null;
-    _toNotify = new ArrayList<Notification>();
+    _toNotify = new ArrayList<CommunicationAttempt>();
+  }
+
+  /**
+   * Create a communication attempt. It will be store in the toNotify list, and will be used when our Terminal changes mode.
+   * It's protected because it's only used by the subclasses.
+   *
+   * @param mode - Our terminal mode at the time of the communication attempt.
+   * @param from - The terminal that is trying to communicate with us.
+   * @param c - The communication that is being attempted.
+   */
+  protected void createAttempt(TerminalMode mode, Terminal from, Communication c){
+    CommunicationAttempt attempt = new CommunicationAttempt(mode,this, from, c);
+    _toNotify.add(attempt);
   }
 
   /**
@@ -74,11 +88,38 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
   protected void acceptSMS(Communication communication){
     // A terminal can only *not* receive an SMS when it is off, so we check for that.
     // FIXME maybe raise an exception?
-    if(this._mode != TerminalMode.OFF) {
-      this._receivedCommunications.add(communication);
+    if(this._mode == TerminalMode.OFF) {
+      // Since the terminal is off, we create an attempt to notify the sending terminal when our state changes.
+      createAttempt(TerminalMode.OFF, communication.getFrom(), communication);
     }
   }
 
+  public void makeVoiceCall(Terminal to){
+    // A terminal can only make a voice call if it is not busy or off.
+  }
+
+  /**
+   * Accepts a voice call. The terminal mode is changed, and the communication is added to the received communications list and to the ongoing communication attribute.
+   * This communication will end when endOnGoingCommunication is called.
+   *
+   * @param communication
+   */
+  protected void acceptVoiceCall(Communication communication){
+    // A terminal can only receive a voice call if it is IDLE (ON).
+    if(this._mode == TerminalMode.ON){
+      // We accept the communication.
+      _receivedCommunications.add(communication);
+      // We set the ongoing communication to the one we just received.
+      _ongoingCommunication = communication;
+      // We set our mode to BUSY.
+      _mode = TerminalMode.BUSY;
+    }
+    else{
+      // If we are not IDLE, we create an attempt to notify the sending terminal when our state changes.
+      createAttempt(this._mode, communication.getFrom(), communication);
+    }
+
+  }
 
   /**
    * Checks if this terminal can end the current interactive communication.
@@ -165,8 +206,18 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     return (int) Math.round(_debt);
   }
 
-  // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
+  /**
+   * Gets ongoing communication.
+   *
+   * @return Communication - ongoing communication
+   */
+    public Communication getOngoingCommunication() {
+        return _ongoingCommunication;
+    }
 
+
+  // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
+  @Override // FIXME make sure this makes sense to be an override.
   public String toString(){
     String terminalType = "";
     if (this instanceof BasicTerminal){
@@ -227,4 +278,5 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
     return _mode;
   }
 
-}
+  }
+
