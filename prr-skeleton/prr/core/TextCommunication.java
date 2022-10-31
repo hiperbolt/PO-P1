@@ -4,8 +4,8 @@ public class TextCommunication extends Communication{
     private String _message;
 
     // Constructor
-    public TextCommunication(Terminal to, Terminal from, String message){
-        super(to, from);    /* Call the Communication constructor */
+    public TextCommunication(Terminal to, Terminal from, boolean friends, String message){
+        super(to, from, friends);    /* Call the Communication constructor */
         this._message = message;
     }
 
@@ -19,4 +19,7 @@ public class TextCommunication extends Communication{
         return _message.length();
     }
 
+    protected double computeCost(TariffPlan plan){
+        return plan.computeCost(this.getFrom().getClient(), this);
+    }
 }

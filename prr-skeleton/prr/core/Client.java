@@ -21,8 +21,6 @@ public class Client implements Serializable{
 
     public Client(String key, String name, int taxNumber) {
         this._terminals = new ArrayList<Terminal>();
-        this._paidCommunications = new ArrayList<Communication>();
-        this._inDebtCommunications = new ArrayList<Communication>();
         this._key = key;
         this._name = name;
         this._taxNumber = taxNumber;
@@ -78,6 +76,10 @@ public class Client implements Serializable{
             return 0;
         }
         return _terminals.size();
+    }
+
+    public ClientLevel getLevel(){
+        return this._level;
     }
 
     public String toString() {

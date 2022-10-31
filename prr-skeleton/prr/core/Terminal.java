@@ -73,10 +73,14 @@ abstract public class Terminal implements Serializable {
     // A Terminal is only capable of making a text communication if it is not busy or off. We check for that.
     if (this.canStartCommunication()){
       // Then, we offer the communication to the outbound terminal. Possibly an exception may arise if the outbound terminal is OFF.
-      TextCommunication newTextComm = new TextCommunication(outboundTerminal, this, message);
+      // We check if the terminal is our friend.
+
+      TextCommunication newTextComm = new TextCommunication(outboundTerminal, this, _friends.contains(outboundTerminal), message);
       outboundTerminal.acceptSMS(newTextComm);
       // If the communication is successful, we add it to _madeCommunications
       _madeCommunications.add(newTextComm);
+      // And we add its value to our debt.
+        _debt += newTextComm.getCost();
     }
   }
 
@@ -87,10 +91,14 @@ abstract public class Terminal implements Serializable {
    **/
   protected void acceptSMS(Communication communication){
     // A terminal can only *not* receive an SMS when it is off, so we check for that.
-    // FIXME maybe raise an exception?
+    // FIXME maybe raise an exception? What should we do?
     if(this._mode == TerminalMode.OFF) {
       // Since the terminal is off, we create an attempt to notify the sending terminal when our state changes.
       createAttempt(TerminalMode.OFF, communication.getFrom(), communication);
+    }
+    else{
+      // If the terminal is not off, we add the communication to the received communications list.
+      _receivedCommunications.add(communication);
     }
   }
 
@@ -278,5 +286,8 @@ abstract public class Terminal implements Serializable {
     return _mode;
   }
 
+  public Client getClient() {
+    return _owner;
   }
+}
 
