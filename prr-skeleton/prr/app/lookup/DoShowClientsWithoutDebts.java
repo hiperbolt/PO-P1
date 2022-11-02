@@ -16,7 +16,7 @@ class DoShowClientsWithoutDebts extends Command<Network> {
 
   @Override
   protected final void execute() throws CommandException {
-    for(String s : _receiver.getAllClientsWithoutDebts()) {
+    for(String s : _receiver.getClientsWithoutDebts()) {
       _display.addLine(s);
       _display.display();
     }

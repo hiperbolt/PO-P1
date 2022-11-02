@@ -56,9 +56,9 @@ public class Client implements Serializable{
     public int calculatePayments() {
         // FIXME
         int res = 0;
-        for (Communication paidCommunication : _paidCommunications) {
-            res += paidCommunication.getCost();
-        }
+        //for (Communication paidCommunication : _paidCommunications) {
+        //    res += paidCommunication.getCost();
+        //}
         return res;
     }
 
@@ -70,9 +70,9 @@ public class Client implements Serializable{
     public int calculateDebts() {
         //FIXME
         int res = 0;
-        for (Communication paidCommunication : _inDebtCommunications) {
-            res += paidCommunication.getCost();
-        }
+        //for (Communication paidCommunication : _inDebtCommunications) {
+        //    res += paidCommunication.getCost();
+        //}
         return res;
     }
     public int getTerminalsSize(){

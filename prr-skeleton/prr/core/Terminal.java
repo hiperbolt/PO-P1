@@ -165,9 +165,9 @@ abstract public class Terminal implements Serializable {
     }
   }
 
-  public abstract void makeVideoCall(Terminal to) throws TerminalOffException, TerminalSilentException, TerminalBusyException;
+  public abstract void makeVideoCall(Terminal to) throws TerminalOffException, TerminalSilentException, TerminalBusyException, prr.core.exception.UnsupportedOperationException;
 
-  protected abstract void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException;
+  protected abstract void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException, prr.core.exception.UnsupportedOperationException;
 
   public void setOnGoingCommunication(Communication c) {
     // We set the communication as our onGoing communication.
