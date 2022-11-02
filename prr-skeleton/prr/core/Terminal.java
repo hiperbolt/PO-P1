@@ -4,10 +4,7 @@ import prr.core.notification.Notification;
 import prr.core.notification.NotificationType;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -76,11 +73,13 @@ abstract public class Terminal implements Serializable {
       // We check if the terminal is our friend.
 
       TextCommunication newTextComm = new TextCommunication(outboundTerminal, this, _friends.contains(outboundTerminal), message);
-      outboundTerminal.acceptSMS(newTextComm);
-      // If the communication is successful, we add it to _madeCommunications
-      _madeCommunications.add(newTextComm);
-      // And we add its value to our debt.
+      if(outboundTerminal.acceptSMS(newTextComm)) {
+        // If the destination accepted the communication, we add it to _madeCommunications.
+        _madeCommunications.add(newTextComm);
+        // And we add its value to our debt.
         _debt += newTextComm.getCost();
+      }
+
     }
   }
 
@@ -88,17 +87,20 @@ abstract public class Terminal implements Serializable {
    * If terminal is not OFF, receives an SMS.
    *
    * @param communication Received communication.
+   *
+   * @return true if communication was accepted, false otherwise.
    **/
-  protected void acceptSMS(Communication communication){
+  protected boolean acceptSMS(Communication communication){
     // A terminal can only *not* receive an SMS when it is off, so we check for that.
-    // FIXME maybe raise an exception? What should we do?
     if(this._mode == TerminalMode.OFF) {
-      // Since the terminal is off, we create an attempt to notify the sending terminal when our state changes.
+      // Since the terminal is off, we create an attempt to notify the sending terminal when our state changes and return false.
       createAttempt(TerminalMode.OFF, communication.getFrom(), communication);
+      return false;
     }
     else{
-      // If the terminal is not off, we add the communication to the received communications list.
+      // If the terminal is not off, we add the communication to the received communications list and return true.
       _receivedCommunications.add(communication);
+      return true;
     }
   }
 
@@ -278,8 +280,8 @@ abstract public class Terminal implements Serializable {
     return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + friends;
   }
 
-  public int getBalance() {
-    return 0; // Temporary while balances and communications are not implemented.
+  public double getBalance() {
+    return _payments - _debt;
   }
 
   public TerminalMode getMode(){
@@ -288,6 +290,18 @@ abstract public class Terminal implements Serializable {
 
   public Client getClient() {
     return _owner;
+  }
+
+  public List<Communication> getMadeCommunications() {
+      return _madeCommunications;
+  }
+
+  public List<Communication> getReceivedCommunications() {
+      return _receivedCommunications;
+  }
+
+  public double getDebt() {
+    return _debt;
   }
 }
 

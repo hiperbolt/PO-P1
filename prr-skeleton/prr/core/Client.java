@@ -93,4 +93,16 @@ public class Client implements Serializable{
             _terminals.add(t);
         }
     }
+
+    public List<Terminal> getTerminals() {
+        return _terminals;
+    }
+
+    public double calculateDebt(){
+        double res = 0;
+        for (Terminal terminal : _terminals) {
+            res += terminal.getDebt();
+        }
+        return res;
+    }
 }

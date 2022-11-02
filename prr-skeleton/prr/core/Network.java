@@ -10,6 +10,8 @@ import prr.core.exception.UnrecognizedEntryException;
 import prr.core.notification.NotificationType;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -19,7 +21,6 @@ public class Network implements Serializable {
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
-  private List<Communication> _communications;
   private List<Client> _clients;
 
   // Should eventually be a Set to prevent duplication.
@@ -39,7 +40,6 @@ public class Network implements Serializable {
     parser.parseFile(filename);
   }
   public Network(){
-    _communications = new ArrayList<Communication>();
     _clients = new ArrayList<Client>();
     _terminals = new ArrayList<Terminal>();
     _tariffPlans = new ArrayList<TariffPlan>();
@@ -221,42 +221,18 @@ public class Network implements Serializable {
   public List<Client> getAllClients(){
     return _clients;
   }
-  /**
-   * Get all String Clients with debts.
-   *
-   * @return List<String> - List of all clients to string.
-   */
-  public List<String> getAllClientsWithDebts(){
-    List<String> returnList = new ArrayList<>();
-    for (Client c : _clients){
-      if (c.calculateDebts() > 0){
-        returnList.add(c.toString());
-      }
-    }
-    return returnList;
-  }
 
-  /**
-   * Get all String Clients with debts.
-   *
-   * @return List<String> - List of all clients to string.
-   */
-  public List<String> getAllClientsWithoutDebts(){
-    List<String> returnList = new ArrayList<>();
-    for (Client c : _clients){
-      if (c.calculateDebts() < 0){
-        returnList.add(c.toString());
-      }
-    }
-    return returnList;
-  }
   /**
    * Get all communications.
    *
    * @return List<Communication> - List of all communications.
    */
   public List<Communication> getAllCommunications(){
-    return _communications;
+    ArrayList<Communication> communications = new ArrayList<Communication>();
+    for (Terminal t : _terminals){
+      communications.addAll(t.getMadeCommunications());
+    }
+    return communications;
   }
 
   /**
@@ -285,6 +261,89 @@ public class Network implements Serializable {
     Terminal _friendTerminal = terminalById(friend);
     _targetTerminal.addFriend(_friendTerminal);
   }
+
+  /** Returns the communications started by all of a Client's terminals.
+   *
+   * @param clientId - Client id
+   *
+   * @return List<String> - toString of all communications started by the client's terminals.
+   */
+  public List<String> getClientMadeCommunications(String clientId){
+    List<String> returnList = new ArrayList<>();
+    for (Terminal t: clientById(clientId).getTerminals()){
+      for (Communication c: t.getMadeCommunications()){
+        returnList.add(c.toString());
+      }
+    }
+    return returnList;
+  }
+
+    /** Returns the communications received by all of a Client's terminals.
+     *
+     * @param clientId - Client id
+     *
+     * @return List<String> - toString of all communications received by the client's terminals.
+     */
+    public List<String> getClientReceivedCommunications(String clientId){
+      List<String> returnList = new ArrayList<>();
+      for (Terminal t: clientById(clientId).getTerminals()){
+        for (Communication c: t.getReceivedCommunications()){
+          returnList.add(c.toString());
+        }
+      }
+      return returnList;
+    }
+
+    /** Returns clients that do not have a current debt.
+     *
+     * @return List<String> - toString of all clients that do not have a current debt.
+     */
+    public List<String> getClientsWithoutDebts(){
+      List<String> returnList = new ArrayList<>();
+      for (Client c : _clients){
+        if (c.calculateDebts() == 0){
+          returnList.add(c.toString());
+        }
+      }
+      return returnList;
+    }
+
+    public List<String> getClientsWithDebts(){
+      // First we're going to get all clients with debts.
+      ArrayList<Client> inDebtClients = new ArrayList<>();
+      for (Client c : _clients) {
+        if (c.calculateDebts() > 0) {
+          inDebtClients.add(c);
+        }
+      }
+      // Then we're going to sort them by decreasing debt, or by increasing ID if they have the same debt.
+      inDebtClients.sort((o1, o2) -> {
+      if (o1.calculateDebts() == o2.calculateDebts()) {
+          return o1.getKey().compareTo(o2.getKey());
+      }
+      return o2.calculateDebts() - o1.calculateDebts();
+      });
+      // Finally we're going to return the list of clients as strings.
+        List<String> returnList = new ArrayList<>();
+        for (Client c : inDebtClients){
+          returnList.add(c.toString());
+        }
+        return returnList;
+    }
+
+  /** Return all terminals with positive balance.
+   *
+   * @return List<String> - toString of all terminals with positive balance.
+   */
+  public List<String> getTerminalsWithPositiveBalance(){
+      ArrayList<String> positiveBalanceTerminals = new ArrayList<>();
+        for (Terminal t : _terminals){
+            if (t.getBalance() > 0){
+              positiveBalanceTerminals.add(t.toString());
+            }
+        }
+        return positiveBalanceTerminals;
+    }
 
 }
 
