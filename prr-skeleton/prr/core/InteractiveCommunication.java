@@ -4,8 +4,8 @@ abstract public class InteractiveCommunication extends Communication{
     private int _duration;
 
     // Constructor
-    public InteractiveCommunication(Terminal to, Terminal from){
-        super(to, from);    /* Call the Communication constructor */
+    public InteractiveCommunication(Terminal to, Terminal from, boolean friends){
+        super(to, from, friends);    /* Call the Communication constructor */
     }
 
     /**

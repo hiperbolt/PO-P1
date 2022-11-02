@@ -1,5 +1,8 @@
 package prr.core;
 
+import prr.core.exception.TerminalBusyException;
+import prr.core.exception.TerminalOffException;
+import prr.core.exception.TerminalSilentException;
 import prr.core.notification.Notification;
 import prr.core.notification.NotificationType;
 
@@ -49,63 +52,94 @@ abstract public class Terminal implements Serializable {
 
   /**
    * Create a communication attempt. It will be store in the toNotify list, and will be used when our Terminal changes mode.
-   * It's protected because it's only used by the subclasses.
    *
-   * @param mode - Our terminal mode at the time of the communication attempt.
    * @param from - The terminal that is trying to communicate with us.
    * @param c - The communication that is being attempted.
    */
-  protected void createAttempt(TerminalMode mode, Terminal from, Communication c){
-    CommunicationAttempt attempt = new CommunicationAttempt(mode,this, from, c);
+  public void createAttempt(Terminal from, Communication c){
+    // We create the attempt with our current Terminal mode and with the provided arguments.
+    CommunicationAttempt attempt = new CommunicationAttempt(this._mode,this, from, c);
+    // We add it to the toNotify list.
     _toNotify.add(attempt);
   }
 
   /**
-   * Creates and sends an SMS (if terminal is not BUSY or OFF).
+   * Creates and sends an SMS.
    *
    * @param outboundTerminal Destination terminal
+   *
    * @param message message string
-   **/
-  public void makeSMS(Terminal outboundTerminal, String message){
-    // A Terminal is only capable of making a text communication if it is not busy or off. We check for that.
-    if (this.canStartCommunication()){
-      // Then, we offer the communication to the outbound terminal. Possibly an exception may arise if the outbound terminal is OFF.
-      // We check if the terminal is our friend.
-
-      TextCommunication newTextComm = new TextCommunication(outboundTerminal, this, _friends.contains(outboundTerminal), message);
-      if(outboundTerminal.acceptSMS(newTextComm)) {
-        // If the destination accepted the communication, we add it to _madeCommunications.
-        _madeCommunications.add(newTextComm);
-        // And we add its value to our debt.
-        _debt += newTextComm.getCost();
+   *
+   * @throws TerminalBusyException if the terminal is busy
+   * @throws TerminalOffException if the terminal is off
+   */
+  public void makeSMS(Terminal outboundTerminal, String message) throws TerminalOffException, TerminalBusyException {
+    // We check if we are in the right mode to make an SMS.
+    if(this.canStartCommunication()){
+      // We create the SMS.
+      TextCommunication newTextComm = new TextCommunication(outboundTerminal, this, this.isFriend(outboundTerminal), message);
+      try {
+        // We try to send the SMS.
+        outboundTerminal.acceptSMS(newTextComm);
+        // If we are here, the SMS was sent successfully.
+        // We add the SMS to our made communications.
+        this._madeCommunications.add(newTextComm);
+        _debt += newTextComm.computeCost(this.getClient().getTariffPlan());
+      } catch (TerminalOffException e) {
+        // If we are here, the SMS was not sent because the destination was off.
+        throw e;
       }
-
+    } else {
+      switch (this.getMode()) {
+        case OFF -> throw new TerminalOffException(this.getId());
+        case BUSY -> throw new TerminalBusyException(this.getId());
+      }
     }
   }
 
   /**
-   * If terminal is not OFF, receives an SMS.
+   * Receives an SMS.
    *
    * @param communication Received communication.
    *
-   * @return true if communication was accepted, false otherwise.
    **/
-  protected boolean acceptSMS(Communication communication){
-    // A terminal can only *not* receive an SMS when it is off, so we check for that.
-    if(this._mode == TerminalMode.OFF) {
-      // Since the terminal is off, we create an attempt to notify the sending terminal when our state changes and return false.
-      createAttempt(TerminalMode.OFF, communication.getFrom(), communication);
-      return false;
-    }
-    else{
-      // If the terminal is not off, we add the communication to the received communications list and return true.
-      _receivedCommunications.add(communication);
-      return true;
+  protected void acceptSMS(Communication communication) throws TerminalOffException{
+    // We check if we are in the right mode to receive an SMS.
+    if(this.getMode() != TerminalMode.OFF){
+      // If we are here, we are in the right mode.
+      // We add the SMS to our received communications.
+      this._receivedCommunications.add(communication);
+    } else {
+      // If we are here, we are not in the right mode.
+      // We throw the exception.
+      throw new TerminalOffException(this.getId());
     }
   }
 
-  public void makeVoiceCall(Terminal to){
-    // A terminal can only make a voice call if it is not busy or off.
+  /**
+   * Creates and sends a Voice call.
+   * Our terminal mode is changed to BUSY, the communication is set as the onGoing, and is added to our made communications.
+   *
+   * @param
+   *
+   */
+  public void makeVoiceCall(Terminal outboundTerminal) throws TerminalOffException, TerminalBusyException, TerminalSilentException {
+    // We check if we are in the right mode to make a Voice call.
+    if(this.canStartCommunication()){
+      // We create the Voice call.
+      VoiceCommunication newVoiceComm = new VoiceCommunication(outboundTerminal, this, this.isFriend(outboundTerminal));
+      // We try to send the Voice call.
+      // This might throw an exception if the destination is Off, Busy or Silent.
+      outboundTerminal.acceptVoiceCall(newVoiceComm);
+      // If we are here, the Voice call was started successfully.
+      // We set the voice call as our onGoing communication.
+      this.setOnGoingCommunication(newVoiceComm);
+    } else {
+      switch (this.getMode()) {
+        case OFF -> throw new TerminalOffException(this.getId());
+        case BUSY -> throw new TerminalBusyException(this.getId());
+      }
+    }
   }
 
   /**
@@ -114,21 +148,32 @@ abstract public class Terminal implements Serializable {
    *
    * @param communication
    */
-  protected void acceptVoiceCall(Communication communication){
-    // A terminal can only receive a voice call if it is IDLE (ON).
-    if(this._mode == TerminalMode.ON){
-      // We accept the communication.
-      _receivedCommunications.add(communication);
-      // We set the ongoing communication to the one we just received.
-      _ongoingCommunication = communication;
-      // We set our mode to BUSY.
-      _mode = TerminalMode.BUSY;
+  protected void acceptVoiceCall(VoiceCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException {
+    // We check if we are in the right mode to receive a Voice call.
+    if(this.getMode() == TerminalMode.ON){
+      // If we are here, we are in the right mode.
+      // We set the voice call as our onGoing communication.
+      this.setOnGoingCommunication(communication);
+    } else {
+      // If we are here, we are not in the right mode.
+      // We throw the exception.
+      switch (this.getMode()) {
+        case OFF -> throw new TerminalOffException(this.getId());
+        case BUSY -> throw new TerminalBusyException(this.getId());
+        case SILENCE -> throw new TerminalSilentException(this.getId());
+      }
     }
-    else{
-      // If we are not IDLE, we create an attempt to notify the sending terminal when our state changes.
-      createAttempt(this._mode, communication.getFrom(), communication);
-    }
+  }
 
+  public abstract void makeVideoCall(Terminal to) throws TerminalOffException, TerminalSilentException, TerminalBusyException;
+
+  protected abstract void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException;
+
+  public void setOnGoingCommunication(Communication c) {
+    // We set the communication as our onGoing communication.
+    this._ongoingCommunication = c;
+    // We change our mode to BUSY.
+    this._mode = TerminalMode.BUSY;
   }
 
   /**
@@ -138,17 +183,27 @@ abstract public class Terminal implements Serializable {
    *          it was the originator of this communication.
    **/
   public boolean canEndCurrentCommunication() {
-    return _mode == TerminalMode.BUSY && this._ongoingCommunication.getFrom() == this;
+    return _mode == TerminalMode.BUSY && _ongoingCommunication.getFrom() == this;
   }
   
   /**
-   * Checks if this terminal can start a new communication.
+   * Checks if this terminal can start a new interactive or SMS communication (same requirements).
    *
-   * @return true if this terminal is neither off neither busy, false otherwise.
+   * @return true if this terminal is neither off neither busy neither has an active interactive communication. False otherwise.
    **/
   public boolean canStartCommunication() {
     return _mode != TerminalMode.OFF && _mode != TerminalMode.BUSY;
   }
+
+  /**
+   * Gets current Terminal mode.
+   *
+   * @return Terminal mode.
+   */
+  public TerminalMode getMode(){
+    return _mode;
+  }
+
 
   /**
    * If possible, sets on Idle.
@@ -204,6 +259,10 @@ abstract public class Terminal implements Serializable {
     return _friends.add(friend);
   }
 
+  public boolean isFriend(Terminal terminal){
+    return _friends.contains(terminal);
+  }
+
   public boolean isUnused(){
     return _madeCommunications.isEmpty() && _receivedCommunications.isEmpty();
   }
@@ -216,14 +275,14 @@ abstract public class Terminal implements Serializable {
     return (int) Math.round(_debt);
   }
 
-  /**
-   * Gets ongoing communication.
-   *
-   * @return Communication - ongoing communication
-   */
-    public Communication getOngoingCommunication() {
-        return _ongoingCommunication;
-    }
+/**
+ * Gets ongoing communication.
+ *
+ * @return Communication - ongoing communication
+ */
+  public Communication getOngoingCommunication() {
+      return _ongoingCommunication;
+  }
 
 
   // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
@@ -284,9 +343,7 @@ abstract public class Terminal implements Serializable {
     return _payments - _debt;
   }
 
-  public TerminalMode getMode(){
-    return _mode;
-  }
+
 
   public Client getClient() {
     return _owner;
@@ -303,5 +360,14 @@ abstract public class Terminal implements Serializable {
   public double getDebt() {
     return _debt;
   }
-}
 
+  public double getPayments() {
+    return _payments;
+  }
+
+  public void payCommunication(Communication communication){
+    _payments += communication.getCost();
+    _debt -= communication.getCost();
+    communication.setPaid(true);
+  }
+}

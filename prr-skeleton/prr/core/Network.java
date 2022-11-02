@@ -43,6 +43,7 @@ public class Network implements Serializable {
     _clients = new ArrayList<Client>();
     _terminals = new ArrayList<Terminal>();
     _tariffPlans = new ArrayList<TariffPlan>();
+    _tariffPlans.add(new BasicPlan());
   }
 
   /**
@@ -61,8 +62,8 @@ public class Network implements Serializable {
       }
     }
 
-    // If a client with the same key does not exist, we create it and add it to the Network.
-    Client c = new Client(id, name, taxID);
+    // If a client with the same key does not exist, we create it and add it to the Network. We give it the first (base) tariff plan.
+    Client c = new Client(id, name, taxID, _tariffPlans.get(0));
     _clients.add(c);
   }
 
@@ -278,58 +279,58 @@ public class Network implements Serializable {
     return returnList;
   }
 
-    /** Returns the communications received by all of a Client's terminals.
-     *
-     * @param clientId - Client id
-     *
-     * @return List<String> - toString of all communications received by the client's terminals.
-     */
-    public List<String> getClientReceivedCommunications(String clientId){
+  /** Returns the communications received by all of a Client's terminals.
+   *
+   * @param clientId - Client id
+   *
+   * @return List<String> - toString of all communications received by the client's terminals.
+   */
+  public List<String> getClientReceivedCommunications(String clientId){
+    List<String> returnList = new ArrayList<>();
+    for (Terminal t: clientById(clientId).getTerminals()){
+      for (Communication c: t.getReceivedCommunications()){
+        returnList.add(c.toString());
+      }
+    }
+    return returnList;
+  }
+
+  /** Returns clients that do not have a current debt.
+   *
+   * @return List<String> - toString of all clients that do not have a current debt.
+   */
+  public List<String> getClientsWithoutDebts(){
+    List<String> returnList = new ArrayList<>();
+    for (Client c : _clients){
+      if (c.calculateDebts() == 0){
+        returnList.add(c.toString());
+      }
+    }
+    return returnList;
+  }
+
+  public List<String> getClientsWithDebts(){
+    // First we're going to get all clients with debts.
+    ArrayList<Client> inDebtClients = new ArrayList<>();
+    for (Client c : _clients) {
+      if (c.calculateDebts() > 0) {
+        inDebtClients.add(c);
+      }
+    }
+    // Then we're going to sort them by decreasing debt, or by increasing ID if they have the same debt.
+    inDebtClients.sort((o1, o2) -> {
+    if (o1.calculateDebts() == o2.calculateDebts()) {
+        return o1.getKey().compareTo(o2.getKey());
+    }
+    return o2.calculateDebts() - o1.calculateDebts();
+    });
+    // Finally we're going to return the list of clients as strings.
       List<String> returnList = new ArrayList<>();
-      for (Terminal t: clientById(clientId).getTerminals()){
-        for (Communication c: t.getReceivedCommunications()){
-          returnList.add(c.toString());
-        }
+      for (Client c : inDebtClients){
+        returnList.add(c.toString());
       }
       return returnList;
-    }
-
-    /** Returns clients that do not have a current debt.
-     *
-     * @return List<String> - toString of all clients that do not have a current debt.
-     */
-    public List<String> getClientsWithoutDebts(){
-      List<String> returnList = new ArrayList<>();
-      for (Client c : _clients){
-        if (c.calculateDebts() == 0){
-          returnList.add(c.toString());
-        }
-      }
-      return returnList;
-    }
-
-    public List<String> getClientsWithDebts(){
-      // First we're going to get all clients with debts.
-      ArrayList<Client> inDebtClients = new ArrayList<>();
-      for (Client c : _clients) {
-        if (c.calculateDebts() > 0) {
-          inDebtClients.add(c);
-        }
-      }
-      // Then we're going to sort them by decreasing debt, or by increasing ID if they have the same debt.
-      inDebtClients.sort((o1, o2) -> {
-      if (o1.calculateDebts() == o2.calculateDebts()) {
-          return o1.getKey().compareTo(o2.getKey());
-      }
-      return o2.calculateDebts() - o1.calculateDebts();
-      });
-      // Finally we're going to return the list of clients as strings.
-        List<String> returnList = new ArrayList<>();
-        for (Client c : inDebtClients){
-          returnList.add(c.toString());
-        }
-        return returnList;
-    }
+  }
 
   /** Return all terminals with positive balance.
    *

@@ -5,31 +5,35 @@ abstract public class Communication implements Serializable{
     private static final long serialVersionUID = 202208091753L;
 
     private static int _counter;     /* Counts the number of communication objects instantiated.*/
-    private boolean _isPaid;
+    private int _id;                 /* Communication id */
+    private boolean _paid;
     private double _cost;
     private boolean _isOngoing;
     private Terminal _to;
     private Terminal _from;
-    private boolean paid; // Is this communication paid?
-
-    private boolean betweenFriends; // Is this communication between friends?
+    private boolean _betweenFriends; // Is this communication between friends?
 
     public Communication(Terminal to, Terminal from, boolean friends){
-        int _id = _counter + 1; /* The id is incremental according to the number of communication objects that already exist */
-        this._isOngoing = true; // FIXME should we do this?
+        this._id = _counter + 1; /* The id is incremental according to the number of communication objects that already exist */
+        this._isOngoing = true;
         this._to = to;
         this._from = from;
-        this.paid = false;
-        this.betweenFriends = friends;
+        this._paid = false;
+        this._betweenFriends = friends;
     }
 
     public boolean isBetweenFriends(){
-        return this.betweenFriends;
+        return this._betweenFriends;
     }
 
     public double getCost(){
         return this._cost;
     }
+
+    public void setCost(double cost){
+        this._cost = cost;
+    }
+
 
     public boolean isOngoingCommunication(){
         return this._isOngoing;
@@ -52,6 +56,20 @@ abstract public class Communication implements Serializable{
         this._from = from;
         return true;
     }
+
+    public void setPaid(boolean paid) {
+        this._paid = paid;
+    }
+
+    /**
+     * Calculates and sets the cost of the communication according to the client level and the tariff plan.
+     * Should be called everytime a communication is terminated.
+     *
+     * @param plan - The tariff plan to use.
+     *
+     * @return cost of the communication
+     */
+    protected abstract double computeCost(TariffPlan plan);
 
 
 

@@ -18,8 +18,11 @@ public class TextCommunication extends Communication{
     protected int getSize(){
         return _message.length();
     }
-
+    
+    @Override
     protected double computeCost(TariffPlan plan){
-        return plan.computeCost(this.getFrom().getClient(), this);
+        double cost = plan.computeCost(this.getFrom().getClient(), this);
+        this.setCost(cost);
+        return cost;
     }
 }

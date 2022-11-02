@@ -3,8 +3,8 @@ package prr.core;
 public class VideoCommunication extends InteractiveCommunication{
     private double _duration;
     // Constructor
-    public VideoCommunication(Terminal to, Terminal from){
-        super(to, from);    /* Call the InteractiveCommunication constructor */
+    public VideoCommunication(Terminal to, Terminal from, boolean friend){
+        super(to, from, friend);    /* Call the InteractiveCommunication constructor */
     }
 
     /**
@@ -18,5 +18,12 @@ public class VideoCommunication extends InteractiveCommunication{
 
     public double getDuration(){
         return this._duration;
+    }
+
+    @Override
+    protected double computeCost(TariffPlan plan){
+        double cost = plan.computeCost(this.getFrom().getClient(), this);
+        this.setCost(cost);
+        return cost;
     }
 }
