@@ -35,4 +35,9 @@ public class TextCommunication extends Communication{
     public int getUnits(){
         return this.getSize();
     }
+
+    @Override
+    public double end(int duration, TariffPlan tariffplan) {
+        return 0;
+    }
 }

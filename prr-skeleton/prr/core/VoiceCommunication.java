@@ -7,10 +7,6 @@ public class VoiceCommunication extends InteractiveCommunication{
         super(to, from, friends);    /* Call the InteractiveCommunication constructor */
     }
 
-    public double getDuration(){
-        return this._duration;
-    }
-
     @Override
     protected double computeCost(TariffPlan plan){
         double cost = plan.computeCost(this.getFrom().getClient(), this);
@@ -22,5 +18,6 @@ public class VoiceCommunication extends InteractiveCommunication{
     public String getType(){
         return "VOICE";
     }
+
 
 }

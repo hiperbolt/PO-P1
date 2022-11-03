@@ -199,36 +199,48 @@ abstract public class Terminal implements Serializable {
     return _mode;
   }
 
-  //FIXME make this work lol
+  public void receiveNotification(Notification n){
+    // We check if our client has failed contact reception active.
+    if(this.getClient().getNotificationReception()){
+      // If we are here, our client has failed contact reception active.
+      // We add the notification to our client's notifications.
+      this.getClient().addNotification(n);
+    }
+  }
+
   public void sendNotifications(TerminalMode to) {
+    // FIXME there is probably a more elegant way to do this
     // We iterate over the toNotify list.
     for (CommunicationAttempt attempt : _toNotify) {
       TerminalMode from = attempt.getMode();
-      switch (to){
+      Notification n;
+      NotificationType type = null;
+      switch (to) {
         case ON -> {
-          // We are either going from OFF to ON or from SILENCE to ON.
+          // We are either going from OFF to ON/IDLE or from BUSY to ON/IDLE.
           if (from == TerminalMode.OFF) {
-            // We are going from OFF to ON.
-            // We notify the originator.
-
+            // We are going from OFF to ON/IDLE.
+            type = NotificationType.O2I;
           } else {
-            // We are going from SILENCE to ON.
-            // We notify the originator.
-
+            // We are going from BUSY to ON/IDLE.
+            type = NotificationType.B2I;
           }
         }
         case SILENCE -> {
-          // We are either going from ON to SILENCE or from OFF to SILENCE.
-          if (from == TerminalMode.ON) {
-            // We are going from ON to SILENCE.
-            // We notify the originator.
+          // We are either going from BUSY to SILENCE or from OFF to SILENCE.
+          if (from == TerminalMode.BUSY) {
+            // We are going from BUSY to SILENCE.
+            type = NotificationType.B2S;
           } else {
             // We are going from OFF to SILENCE.
-            // We notify the originator.
-
+            type = NotificationType.O2S;
           }
         }
       }
+      // We create the notification.
+      n = new Notification(type,this, attempt.getTo());
+      // We send the notification.
+      receiveNotification(n);
     }
   }
 

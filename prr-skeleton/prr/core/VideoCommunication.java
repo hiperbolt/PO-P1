@@ -16,9 +16,6 @@ public class VideoCommunication extends InteractiveCommunication{
         this.setTo(to);
     }
 
-    public double getDuration(){
-        return this._duration;
-    }
 
     @Override
     protected double computeCost(TariffPlan plan){

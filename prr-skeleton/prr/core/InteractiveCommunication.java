@@ -38,8 +38,12 @@ abstract public class InteractiveCommunication extends Communication{
 
     }
 
-    public void setDuration(int duration){
+    public void setDuration(int duration) {
         this._duration = duration;
+    }
+
+    public double getDuration(){
+        return this._duration;
     }
 
 }

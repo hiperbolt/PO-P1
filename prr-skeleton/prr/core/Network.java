@@ -348,5 +348,20 @@ public class Network implements Serializable {
         return positiveBalanceTerminals;
     }
 
+  public long getGlobalPayments() {
+    long total = 0;
+    for (Client c: _clients) {
+      total += c.calculatePayments();
+    }
+    return total;
+  }
+
+  public long getGlobalDebts() {
+    long total = 0;
+    for (Client c: _clients) {
+      total += c.calculateDebts();
+    }
+    return total;
+  }
 }
 

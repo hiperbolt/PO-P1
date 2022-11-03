@@ -87,9 +87,6 @@ abstract public class Communication implements Serializable{
         return _id;
     }
 
-
-    public abstract void setDuration(Integer duration);
-
     public void setOngoing(boolean ongoing) {
         this._isOngoing = ongoing;
     }

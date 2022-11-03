@@ -1,5 +1,7 @@
 package prr.core;
 
+import prr.core.notification.Notification;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +19,8 @@ public class Client implements Serializable{
     private ClientLevel _level;
     private boolean _receiveNotifications;
     private List<Terminal> _terminals;
-
-
     private TariffPlan _tariffPlan;
+    private List<Notification> _notifications;
 
     public Client(String key, String name, int taxNumber, TariffPlan tariffPlan){
         this._terminals = new ArrayList<Terminal>();
@@ -29,6 +30,7 @@ public class Client implements Serializable{
         this._level = ClientLevel.NORMAL;
         this._receiveNotifications = true;
         this._tariffPlan = tariffPlan;
+        this._notifications = new ArrayList<Notification>();
     }
 
 
@@ -87,8 +89,19 @@ public class Client implements Serializable{
 
     public String toString() {
         // CLIENT|key|name|taxId|type|receiveNotifications|tariffPlan|terminals|payments|debts
+        // notifications by received order
         String notifications = _receiveNotifications ? "YES" : "NO";
-        return "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
+        String notificationsList = "";
+        if (_receiveNotifications && !_notifications.isEmpty()) {
+            for (Notification n : _notifications){
+                notificationsList += n.toString() + "\n";
+            }
+            // We clear the notifications list after viewing them.
+            _notifications.clear();
+        }
+
+
+        return "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts() + "|" + notificationsList;
     }
 
     public void addTerminal(Terminal t) {
@@ -131,5 +144,16 @@ public class Client implements Serializable{
             }
         }
         return res;
+    }
+
+    public boolean getNotificationReception() {
+        return this._receiveNotifications;
+    }
+
+    public void addNotification(Notification n) {
+    if (this._notifications == null){
+        this._notifications = new ArrayList<Notification>();
+    }
+    this._notifications.add(n);
     }
 }

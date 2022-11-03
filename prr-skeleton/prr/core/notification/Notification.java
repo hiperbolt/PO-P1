@@ -16,4 +16,8 @@ public class Notification implements Serializable{
         _from = from;
         _to = to;
     }
+
+    public String toString(){
+        return _type + "|" + _to;
+    }
 }
