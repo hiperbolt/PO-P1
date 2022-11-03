@@ -106,7 +106,8 @@ abstract public class Terminal implements Serializable {
       this._receivedCommunications.add(communication);
     } else {
       // If we are here, we are not in the right mode.
-      // We throw the exception.
+      // We create an attempt and throw the exception.
+      this.createAttempt(communication.getFrom(), communication);
       throw new TerminalOffException(this.getId());
     }
   }
@@ -433,9 +434,18 @@ abstract public class Terminal implements Serializable {
   public double endOngoingCommunication(int duration) {
     double cost =  _ongoingCommunication.end(duration, _owner.getTariffPlan());
     this.setOnIdle();
+    _ongoingCommunication.getTo().endOngoingCommunicationAsReceiver(duration, _owner.getTariffPlan());
     _madeCommunications.add(_ongoingCommunication);
     _ongoingCommunication = null;
     _debt += cost;
     return cost;
   }
+
+  public void endOngoingCommunicationAsReceiver(int duration, TariffPlan tariffPlan) {
+    _ongoingCommunication.end(duration, _owner.getTariffPlan());
+    this.setOnIdle();
+    _receivedCommunications.add(_ongoingCommunication);
+    _ongoingCommunication = null;
+  }
+
 }

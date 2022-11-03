@@ -18,6 +18,6 @@ public class Notification implements Serializable{
     }
 
     public String toString(){
-        return _type + "|" + _to;
+        return _type + "|" + _to.getId();
     }
 }

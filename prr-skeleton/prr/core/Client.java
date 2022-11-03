@@ -93,15 +93,16 @@ public class Client implements Serializable{
         String notifications = _receiveNotifications ? "YES" : "NO";
         String notificationsList = "";
         if (_receiveNotifications && !_notifications.isEmpty()) {
+            notificationsList += "|";
             for (Notification n : _notifications){
-                notificationsList += n.toString() + "\n";
+                notificationsList += "\n" + n.toString();
             }
             // We clear the notifications list after viewing them.
             _notifications.clear();
         }
 
 
-        return "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts() + "|" + notificationsList;
+        return "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts() + notificationsList;
     }
 
     public void addTerminal(Terminal t) {

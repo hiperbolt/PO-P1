@@ -22,7 +22,7 @@ class DoShowClientPaymentsAndDebts extends Command<Network> {
     Client client = _receiver.clientById(stringField("key"));
     long payments = client.calculatePayments();
     long debts = client.calculateDebts();
-    _display.popup(Message.clientPaymentsAndDebts(stringField("key"), payments, debts));
+    _display.popup(Message.clientPaymentsAndDebts("key", payments, debts));
 
   }
 }
