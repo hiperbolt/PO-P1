@@ -1,5 +1,6 @@
 package prr.app.lookup;
 
+import prr.core.Client;
 import prr.core.Network;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -9,14 +10,18 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show communications from a client.
  */
 class DoShowCommunicationsFromClient extends Command<Network> {
+  Network _receiver;
 
   DoShowCommunicationsFromClient(Network receiver) {
     super(Label.SHOW_COMMUNICATIONS_FROM_CLIENT, receiver);
-    //FIXME add command fields
+    _receiver = receiver;
+    addStringField("client", Message.clientKey());
   }
 
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+    Client client = _receiver.clientById(stringField("client"));
+    _display.addAll(client.getMadeCommunications());
+    _display.display();
   }
 }

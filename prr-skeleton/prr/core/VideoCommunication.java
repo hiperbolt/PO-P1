@@ -26,4 +26,9 @@ public class VideoCommunication extends InteractiveCommunication{
         this.setCost(cost);
         return cost;
     }
+
+    @Override
+    public String getType(){
+        return "VIDEO";
+    }
 }

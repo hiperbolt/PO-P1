@@ -78,17 +78,12 @@ abstract public class Terminal implements Serializable {
     if(this.canStartCommunication()){
       // We create the SMS.
       TextCommunication newTextComm = new TextCommunication(outboundTerminal, this, this.isFriend(outboundTerminal), message);
-      try {
-        // We try to send the SMS.
-        outboundTerminal.acceptSMS(newTextComm);
-        // If we are here, the SMS was sent successfully.
-        // We add the SMS to our made communications.
-        this._madeCommunications.add(newTextComm);
-        _debt += newTextComm.computeCost(this.getClient().getTariffPlan());
-      } catch (TerminalOffException e) {
-        // If we are here, the SMS was not sent because the destination was off.
-        throw e;
-      }
+      // We try to send the SMS.
+      outboundTerminal.acceptSMS(newTextComm);
+      // If we are here, the SMS was sent successfully.
+      // We add the SMS to our made communications.
+      this._madeCommunications.add(newTextComm);
+      _debt += newTextComm.computeCost(this.getClient().getTariffPlan());
     } else {
       switch (this.getMode()) {
         case OFF -> throw new TerminalOffException(this.getId());
@@ -169,7 +164,7 @@ abstract public class Terminal implements Serializable {
 
   protected abstract void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException, prr.core.exception.UnsupportedOperationException;
 
-  public void setOnGoingCommunication(Communication c) {
+  public void setOnGoingCommunication(InteractiveCommunication c) {
     // We set the communication as our onGoing communication.
     this._ongoingCommunication = c;
     // We change our mode to BUSY.
@@ -204,6 +199,40 @@ abstract public class Terminal implements Serializable {
     return _mode;
   }
 
+  //FIXME make this work lol
+  public void sendNotifications(TerminalMode to) {
+    // We iterate over the toNotify list.
+    for (CommunicationAttempt attempt : _toNotify) {
+      TerminalMode from = attempt.getMode();
+      switch (to){
+        case ON -> {
+          // We are either going from OFF to ON or from SILENCE to ON.
+          if (from == TerminalMode.OFF) {
+            // We are going from OFF to ON.
+            // We notify the originator.
+
+          } else {
+            // We are going from SILENCE to ON.
+            // We notify the originator.
+
+          }
+        }
+        case SILENCE -> {
+          // We are either going from ON to SILENCE or from OFF to SILENCE.
+          if (from == TerminalMode.ON) {
+            // We are going from ON to SILENCE.
+            // We notify the originator.
+          } else {
+            // We are going from OFF to SILENCE.
+            // We notify the originator.
+
+          }
+        }
+      }
+    }
+  }
+
+
 
   /**
    * If possible, sets on Idle.
@@ -213,6 +242,7 @@ abstract public class Terminal implements Serializable {
   public boolean setOnIdle(){
     if (_mode == TerminalMode.OFF || _mode == TerminalMode.SILENCE || _mode == TerminalMode.BUSY){
       _mode = TerminalMode.ON;
+      sendNotifications(TerminalMode.ON);
       return true;
     }
     return false;
@@ -226,6 +256,7 @@ abstract public class Terminal implements Serializable {
   public boolean setOnSilent(){
     if (_mode == TerminalMode.ON || _mode == TerminalMode.BUSY){
       _mode = TerminalMode.SILENCE;
+      sendNotifications(TerminalMode.SILENCE);
       return true;
     }
     return false;
@@ -369,5 +400,28 @@ abstract public class Terminal implements Serializable {
     _payments += communication.getCost();
     _debt -= communication.getCost();
     communication.setPaid(true);
+  }
+
+  public Communication getCommunicationByID(int communication) {
+    for (Communication c : _madeCommunications) {
+      if (c.getId() == communication) {
+        return c;
+      }
+    }
+    for (Communication c : _receivedCommunications) {
+      if (c.getId() == communication) {
+        return c;
+      }
+    }
+    return null;
+  }
+
+
+  public double endOngoingCommunication(int duration) {
+    double cost =  _ongoingCommunication.end(duration, _owner.getTariffPlan());
+    this.setOnIdle();
+    _ongoingCommunication = null;
+    _debt += cost;
+    return cost;
   }
 }

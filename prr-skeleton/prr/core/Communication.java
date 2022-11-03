@@ -13,7 +13,7 @@ abstract public class Communication implements Serializable{
     private Terminal _from;
     private boolean _betweenFriends; // Is this communication between friends?
 
-    public Communication(Terminal to, Terminal from, boolean friends){
+    public Communication(Terminal to, Terminal from, boolean friends, boolean onGoing){
         this._id = _counter + 1; /* The id is incremental according to the number of communication objects that already exist */
         this._isOngoing = true;
         this._to = to;
@@ -21,6 +21,7 @@ abstract public class Communication implements Serializable{
         this._paid = false;
         this._betweenFriends = friends;
     }
+
 
     public boolean isBetweenFriends(){
         return this._betweenFriends;
@@ -71,6 +72,31 @@ abstract public class Communication implements Serializable{
      */
     protected abstract double computeCost(TariffPlan plan);
 
+    public abstract String getType();
+
+    public abstract int getUnits();
+
+    public String toString(){
+        // type|id|idSender|idReceiver|units|price|status
+        return getType() + "|" + _id + "|" + _from.getId() + "|" + _to.getId() + "|" + getUnits() + "|" + getCost() + "|" + (_isOngoing ? "ONGOING" : "FINISHED");
+
+    }
 
 
+    public int getId() {
+        return _id;
+    }
+
+
+    public abstract void setDuration(Integer duration);
+
+    public void setOngoing(boolean ongoing) {
+        this._isOngoing = ongoing;
+    }
+
+    public abstract double end(int duration, TariffPlan tariffplan);
+
+    public boolean isPaid() {
+        return _paid;
+    }
 }

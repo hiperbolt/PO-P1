@@ -3,6 +3,7 @@ package prr.core;
 import prr.core.exception.TerminalBusyException;
 import prr.core.exception.TerminalOffException;
 import prr.core.exception.TerminalSilentException;
+import prr.core.exception.UnsupportedOperationException;
 
 /**
  * Fancy Terminal, extends abstract Terminal.
@@ -14,7 +15,7 @@ public class FancyTerminal extends Terminal{
     }
 
     @Override
-    public void makeVideoCall(Terminal outboundTerminal) throws TerminalOffException, TerminalBusyException, TerminalSilentException {
+    public void makeVideoCall(Terminal outboundTerminal) throws TerminalOffException, TerminalBusyException, TerminalSilentException, UnsupportedOperationException {
     // We check if we are in the right mode to make a Video call.
     if(this.canStartCommunication()){
         // We create the Video call.

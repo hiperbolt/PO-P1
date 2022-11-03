@@ -17,4 +17,10 @@ public class VoiceCommunication extends InteractiveCommunication{
         this.setCost(cost);
         return cost;
     }
+
+    @Override
+    public String getType(){
+        return "VOICE";
+    }
+
 }

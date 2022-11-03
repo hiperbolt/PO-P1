@@ -2,6 +2,7 @@ package prr.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,11 +55,10 @@ public class Client implements Serializable{
      * @return the sum of Payed communications.
      */
     public int calculatePayments() {
-        // FIXME
         int res = 0;
-        //for (Communication paidCommunication : _paidCommunications) {
-        //    res += paidCommunication.getCost();
-        //}
+        for (Terminal t : this._terminals) {
+            res += t.getPayments();
+        }
         return res;
     }
 
@@ -68,11 +68,10 @@ public class Client implements Serializable{
      * @return the sum of in debt communications.
      */
     public int calculateDebts() {
-        //FIXME
         int res = 0;
-        //for (Communication paidCommunication : _inDebtCommunications) {
-        //    res += paidCommunication.getCost();
-        //}
+        for (Terminal t : this._terminals) {
+            res += t.getDebt();
+        }
         return res;
     }
     public int getTerminalsSize(){
@@ -112,5 +111,25 @@ public class Client implements Serializable{
 
     public TariffPlan getTariffPlan(){
         return this._tariffPlan;
+    }
+
+    public List<String> getMadeCommunications(){
+        List<String> res = new ArrayList<String>();
+        for (Terminal terminal : _terminals) {
+            for (Communication communication : terminal.getMadeCommunications()) {
+                res.add(communication.toString());
+            }
+        }
+        return res;
+    }
+
+    public List<String> getReceivedCommunications() {
+        List<String> res = new ArrayList<String>();
+        for (Terminal terminal : _terminals) {
+            for (Communication communication : terminal.getReceivedCommunications()) {
+                res.add(communication.toString());
+            }
+        }
+        return res;
     }
 }

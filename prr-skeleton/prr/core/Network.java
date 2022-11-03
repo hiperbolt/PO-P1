@@ -228,10 +228,12 @@ public class Network implements Serializable {
    *
    * @return List<Communication> - List of all communications.
    */
-  public List<Communication> getAllCommunications(){
-    ArrayList<Communication> communications = new ArrayList<Communication>();
+  public List<String> getAllCommunications(){
+    List<String> communications = new ArrayList<>();
     for (Terminal t : _terminals){
-      communications.addAll(t.getMadeCommunications());
+      for (Communication c : t.getMadeCommunications()){
+        communications.add(c.toString());
+      }
     }
     return communications;
   }
