@@ -414,7 +414,8 @@ abstract public class Terminal implements Serializable {
     communication.setPaid(true);
   }
 
-  public Communication getCommunicationByID(int communication) {
+  public Communication getCommunicationByID(int communication) throws AlreadyPaidException {
+    // FIXME
     for (Communication c : _madeCommunications) {
       if (c.getId() == communication) {
         return c;
@@ -432,6 +433,7 @@ abstract public class Terminal implements Serializable {
   public double endOngoingCommunication(int duration) {
     double cost =  _ongoingCommunication.end(duration, _owner.getTariffPlan());
     this.setOnIdle();
+    _madeCommunications.add(_ongoingCommunication);
     _ongoingCommunication = null;
     _debt += cost;
     return cost;

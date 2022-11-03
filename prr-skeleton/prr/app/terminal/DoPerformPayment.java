@@ -19,10 +19,17 @@ class DoPerformPayment extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    Communication c = _terminal.getCommunicationByID(integerField("communication"));
-    if(c == null) {
+    // FIXME
+    Communication c = null;
+    try {
+      c = _terminal.getCommunicationByID(integerField("communication"));
+      if(c == null) {
+        _display.popup(Message.invalidCommunication());
+      } else {
+        _terminal.payCommunication(c);
+      }
+    } catch (Exception e) {
       _display.popup(Message.invalidCommunication());
     }
-    _terminal.payCommunication(c);
   }
 }
