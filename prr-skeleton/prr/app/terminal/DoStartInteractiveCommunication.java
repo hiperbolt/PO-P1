@@ -3,6 +3,10 @@ package prr.app.terminal;
 import prr.core.Network;
 import prr.core.Terminal;
 import prr.app.exception.UnknownTerminalKeyException;
+import prr.core.exception.TerminalBusyException;
+import prr.core.exception.TerminalOffException;
+import prr.core.exception.TerminalSilentException;
+import prr.core.exception.UnsupportedOperationException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
@@ -27,17 +31,35 @@ class DoStartInteractiveCommunication extends TerminalCommand {
     if (t == null){
       throw new UnknownTerminalKeyException(stringField("destinationId"));
     }
-    switch (optionField("commType")) {
-      case "VOICE":
-        try {
+
+    try {
+      if (optionField("commType").equals("VOICE")) {
         _terminal.makeVoiceCall(t);
-        } catch (Exception e) {
-          //placeholder
-        }
-        break;
-      case "VIDEO":
-        //placeholder
-        break;
+      } else {
+        _terminal.makeVideoCall(t);
+      }
+    } catch (TerminalBusyException e) {
+      if(e.getMessage().equals(stringField("destinationId"))){
+        _display.popup(Message.destinationIsBusy(stringField("destinationId")));
+      } else {
+        _display.popup(Message.originIsBusy(_terminal.getId()));
+      }
+    } catch (TerminalOffException e) {
+      if(e.getMessage().equals(stringField("destinationId"))){
+        _display.popup(Message.destinationIsOff(stringField("destinationId")));
+      } else {
+        _display.popup(Message.originIsOff(_terminal.getId()));
+      }
+    } catch (TerminalSilentException e) {
+      _display.popup(Message.destinationIsSilent(stringField("destinationId")));
+    } catch(UnsupportedOperationException e){
+      if(e.getMessage().equals(stringField("destinationId"))){
+        _display.popup(Message.unsupportedAtDestination(stringField("destinationId"), optionField("commType")));
+      } else {
+        _display.popup(Message.unsupportedAtOrigin(_terminal.getId(), optionField("commType")));
+      }
     }
+
+
   }
 }

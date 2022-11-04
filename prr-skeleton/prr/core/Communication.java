@@ -4,7 +4,7 @@ import java.io.Serializable;
 abstract public class Communication implements Serializable{
     private static final long serialVersionUID = 202208091753L;
 
-    private static int _counter;     /* Counts the number of communication objects instantiated.*/
+    private static int counter;     /* Counts the number of communication objects instantiated.*/
     private int _id;                 /* Communication id */
     private boolean _paid;
     private double _cost;
@@ -14,8 +14,9 @@ abstract public class Communication implements Serializable{
     private boolean _betweenFriends; // Is this communication between friends?
 
     public Communication(Terminal to, Terminal from, boolean friends, boolean onGoing){
-        this._id = _counter + 1; /* The id is incremental according to the number of communication objects that already exist */
-        this._isOngoing = true;
+        counter++;
+        this._id = counter; /* The id is incremental according to the number of communication objects that already exist */
+        this._isOngoing = onGoing;
         this._to = to;
         this._from = from;
         this._paid = false;
@@ -78,7 +79,7 @@ abstract public class Communication implements Serializable{
 
     public String toString(){
         // type|id|idSender|idReceiver|units|price|status
-        return getType() + "|" + _id + "|" + _from.getId() + "|" + _to.getId() + "|" + getUnits() + "|" + getCost() + "|" + (_isOngoing ? "ONGOING" : "FINISHED");
+        return getType() + "|" + _id + "|" + _from.getId() + "|" + _to.getId() + "|" + getUnits() + "|" + Math.round(getCost()) + "|" + (_isOngoing ? "ONGOING" : "FINISHED");
 
     }
 

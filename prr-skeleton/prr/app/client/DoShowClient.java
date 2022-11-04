@@ -3,8 +3,11 @@ package prr.app.client;
 import prr.core.Client;
 import prr.core.Network;
 import prr.app.exception.UnknownClientKeyException;
+import prr.core.notification.Notification;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
+
+import java.util.List;
 
 /**
  * Show specific client: also show previous notifications.
@@ -22,7 +25,10 @@ class DoShowClient extends Command<Network> {
     if (c == null){
       throw new UnknownClientKeyException(stringField("clientId"));
     }
-    // Popup calls display(), so it should call toString() automatically.
-    _display.popup(c);
+
+    _display.addLine(c);
+    System.out.println(c.getNotifs());
+    _display.addAll(c.getNotifs());
+    _display.display();
   }
 }

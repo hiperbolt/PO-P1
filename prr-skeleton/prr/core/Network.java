@@ -87,8 +87,8 @@ public class Network implements Serializable {
       default -> throw new UnrecognizedEntryException(ttype);
     }
 
-    // First, we check if the terminal id is in a valid format (if its length is at least 6 and if it contains only numbers).
-    if(id.length() < 6 || !id.matches("[0-9]+")){
+    // First, we check if the terminal id is in a valid format (if its length is exactly 6 and if it contains only numbers).
+    if(id.length() != 6 || !id.matches("[0-9]+")){
       throw new InvalidKeyException(id);
     }
 

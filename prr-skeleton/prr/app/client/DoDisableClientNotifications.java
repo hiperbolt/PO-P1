@@ -23,6 +23,9 @@ class DoDisableClientNotifications extends Command<Network> {
     }
 
     // If it does, disable notifications.
+    if(!_receiver.clientById(stringField("clientId")).getNotificationReception()) {
+      _display.popup(Message.clientNotificationsAlreadyDisabled());
+    }
     _receiver.clientById(stringField("clientId")).disableReceiveNotifications();
   }
 }

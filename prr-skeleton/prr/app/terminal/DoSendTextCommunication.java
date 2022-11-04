@@ -7,6 +7,8 @@ import prr.core.exception.TerminalBusyException;
 import prr.core.exception.TerminalOffException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.CommandException;
+
+
 //FIXME add more imports if needed
 
 /**
@@ -38,7 +40,8 @@ class DoSendTextCommunication extends TerminalCommand {
     } catch (TerminalBusyException ignored) {
     } catch (TerminalOffException e) {
       // If the exception came from the destination, we show the destinationIsOff message.
-      if (e.getMessage() == stringField("to")) {
+
+      if (e.getMessage().equals(stringField("to"))) {
         _display.popup(Message.destinationIsOff(stringField("to")));
       }
     }

@@ -20,9 +20,12 @@ class DoShowClientPaymentsAndDebts extends Command<Network> {
   @Override
   protected final void execute() throws CommandException {
     Client client = _receiver.clientById(stringField("key"));
+    if (client == null){
+      throw new UnknownClientKeyException(stringField("key"));
+    }
     long payments = client.calculatePayments();
     long debts = client.calculateDebts();
-    _display.popup(Message.clientPaymentsAndDebts("key", payments, debts));
+    _display.popup(Message.clientPaymentsAndDebts(stringField("key"), payments, debts));
 
   }
 }

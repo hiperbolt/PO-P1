@@ -27,6 +27,7 @@ abstract public class Terminal implements Serializable {
   private Client _owner;
   private List<Communication> _madeCommunications;
   private List<Communication> _receivedCommunications;
+  private TerminalMode _previousMode; // Mode before communication was started.
   private Communication _ongoingCommunication;
   private List<CommunicationAttempt> _toNotify;
 
@@ -152,7 +153,8 @@ abstract public class Terminal implements Serializable {
       this.setOnGoingCommunication(communication);
     } else {
       // If we are here, we are not in the right mode.
-      // We throw the exception.
+      // We create an attempt and throw the exception.
+      this.createAttempt(communication.getFrom(), communication);
       switch (this.getMode()) {
         case OFF -> throw new TerminalOffException(this.getId());
         case BUSY -> throw new TerminalBusyException(this.getId());
@@ -166,6 +168,8 @@ abstract public class Terminal implements Serializable {
   protected abstract void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException, prr.core.exception.UnsupportedOperationException;
 
   public void setOnGoingCommunication(InteractiveCommunication c) {
+    // We save our current mode in the previousMode attribute.
+    this._previousMode = this._mode;
     // We set the communication as our onGoing communication.
     this._ongoingCommunication = c;
     // We change our mode to BUSY.
@@ -300,6 +304,9 @@ abstract public class Terminal implements Serializable {
   }
 
   public boolean addFriend(Terminal friend){
+    if (_friends.contains(friend) || friend == this){
+      return false;
+    }
     return _friends.add(friend);
   }
 
@@ -351,35 +358,21 @@ abstract public class Terminal implements Serializable {
     String balanceDebts = Integer.toString(this.getBalanceDebt());
     String friends = "";
 
-    // Now we sort terminal friends by growing id
-    if (!_friends.isEmpty()){
-      ArrayList<Terminal> sortedFriends = new ArrayList<Terminal>();
+    // Now we sort terminal friends by growing id and add them to the string.
+    if (!_friends.isEmpty()) {
+      List<Terminal> sortedFriends = new ArrayList<>(_friends);
+      sortedFriends.sort(Comparator.comparing(Terminal::getId));
+      for (Terminal t : sortedFriends) {
+        friends += t.getId() + ",";
+      }
+      // We remove the last comma.
+      friends = friends.substring(0, friends.length() - 1);
 
-      for (Terminal friend : this._friends){
-        if (sortedFriends.isEmpty()){
-          sortedFriends.add(friend);
-        }
-        else {
-          for (int i = 0; i < sortedFriends.size(); i++){
-            if (friend._id.compareTo(sortedFriends.get(i)._id) < 0){
-              sortedFriends.add(i, friend);
-              break;
-            }
-            else if (i == sortedFriends.size() - 1){
-              sortedFriends.add(friend);
-              break;
-            }
-          }
-        }
+      if(!friends.isEmpty()){
+        friends = "|" + friends;
       }
-      for (Terminal friend : sortedFriends){
-        friends += friend._id + ",";
-      }
-      friends = "|" + friends.substring(0, friends.length() - 1);
     }
-  else{
-    friends = "";
-  }
+
     return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + friends;
   }
 
@@ -410,9 +403,12 @@ abstract public class Terminal implements Serializable {
   }
 
   public void payCommunication(Communication communication){
-    _payments += communication.getCost();
-    _debt -= communication.getCost();
-    communication.setPaid(true);
+    // First we check if the communication is finished, hasn't been paid yet and the terminal is the one that made it.
+    if (!communication.isOngoingCommunication() && !communication.isPaid() && communication.getFrom().equals(this)) {
+      _payments += communication.getCost();
+      _debt -= communication.getCost();
+      communication.setPaid(true);
+    }
   }
 
   public Communication getCommunicationByID(int communication) throws AlreadyPaidException {
@@ -433,7 +429,14 @@ abstract public class Terminal implements Serializable {
 
   public double endOngoingCommunication(int duration) {
     double cost =  _ongoingCommunication.end(duration, _owner.getTariffPlan());
-    this.setOnIdle();
+    switch (_previousMode) {
+      case ON:
+        setOnIdle();
+        break;
+      case SILENCE:
+        setOnSilent();
+        break;
+    }
     _ongoingCommunication.getTo().endOngoingCommunicationAsReceiver(duration, _owner.getTariffPlan());
     _madeCommunications.add(_ongoingCommunication);
     _ongoingCommunication = null;
@@ -443,7 +446,14 @@ abstract public class Terminal implements Serializable {
 
   public void endOngoingCommunicationAsReceiver(int duration, TariffPlan tariffPlan) {
     _ongoingCommunication.end(duration, _owner.getTariffPlan());
-    this.setOnIdle();
+    switch (_previousMode) {
+      case ON:
+        setOnIdle();
+        break;
+      case SILENCE:
+        setOnSilent();
+        break;
+    }
     _receivedCommunications.add(_ongoingCommunication);
     _ongoingCommunication = null;
   }
