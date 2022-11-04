@@ -18,7 +18,7 @@ class DoStartInteractiveCommunication extends TerminalCommand {
   Terminal _terminal;
   Network _network;
   DoStartInteractiveCommunication(Network context, Terminal terminal) {
-    super(Label.START_INTERACTIVE_COMMUNICATION, context, terminal, receiver -> receiver.canStartCommunication());
+    super(Label.START_INTERACTIVE_COMMUNICATION, context, terminal, Terminal::canStartCommunication);
     _terminal = terminal;
     _network = context;
     addStringField("destinationId", Message.terminalKey());

@@ -18,7 +18,7 @@ class DoSendTextCommunication extends TerminalCommand {
   Terminal _terminal;
   Network _context;
   DoSendTextCommunication(Network context, Terminal terminal) {
-    super(Label.SEND_TEXT_COMMUNICATION, context, terminal, receiver -> receiver.canStartCommunication());
+    super(Label.SEND_TEXT_COMMUNICATION, context, terminal, Terminal::canStartCommunication);
     _terminal = terminal;
     _context = context;
     addStringField("to", Message.terminalKey());
