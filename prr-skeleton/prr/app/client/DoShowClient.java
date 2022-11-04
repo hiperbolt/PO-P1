@@ -27,8 +27,12 @@ class DoShowClient extends Command<Network> {
     }
 
     _display.addLine(c);
-    System.out.println(c.getNotifs());
-    _display.addAll(c.getNotifs());
+    List<Notification> notifications = c.getNotifs();
+    if (notifications != null) {
+      for (Notification n : notifications) {
+        _display.addLine(n);
+      }
+    }
     _display.display();
   }
 }

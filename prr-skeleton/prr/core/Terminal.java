@@ -220,33 +220,33 @@ abstract public class Terminal implements Serializable {
       TerminalMode from = attempt.getMode();
       Notification n;
       NotificationType type = null;
-      switch (to) {
-        case ON -> {
-          // We are either going from OFF to ON/IDLE or from BUSY to ON/IDLE.
-          if (from == TerminalMode.OFF) {
+      switch (from) {
+        case OFF -> {
+          // We are either going from OFF to ON/IDLE or from OFF to SILENCE.
+          if (to == TerminalMode.ON) {
             // We are going from OFF to ON/IDLE.
             type = NotificationType.O2I;
-          } else {
-            // We are going from BUSY to ON/IDLE.
-            type = NotificationType.B2I;
-          }
-        }
-        case SILENCE -> {
-          // We are either going from BUSY to SILENCE or from OFF to SILENCE.
-          if (from == TerminalMode.BUSY) {
-            // We are going from BUSY to SILENCE.
-            type = NotificationType.B2S;
           } else {
             // We are going from OFF to SILENCE.
             type = NotificationType.O2S;
           }
         }
+        case BUSY -> {
+          // We are going from BUSY to ON/IDLE
+            type = NotificationType.B2I;
+          }
+        case SILENCE -> {
+          // We are going from SILENCE to ON/IDLE
+          type = NotificationType.S2I;
+        }
       }
       // We create the notification.
       n = new Notification(type,this, attempt.getTo());
       // We send the notification.
-      receiveNotification(n);
+      attempt.getFrom().receiveNotification(n);
     }
+    // We clear the toNotify list.
+    _toNotify.clear();
   }
 
 

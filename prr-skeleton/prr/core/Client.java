@@ -96,11 +96,13 @@ public class Client implements Serializable{
     }
 
     public List<Notification> getNotifs() {
-        // We clear the notifications list after viewing them.
-        List<Notification> res = new ArrayList<Notification>(_notifications);
-
-        _notifications.clear();
-        return res;
+        // Make a deep copy of the notifications
+        if(!_notifications.isEmpty()) {
+            List<Notification> res = new ArrayList<Notification>(_notifications);
+            _notifications.clear();
+            return res;
+        }
+        return null;
     }
 
     public void addTerminal(Terminal t) {
