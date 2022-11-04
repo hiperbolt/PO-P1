@@ -10,7 +10,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command for ending communication.
  */
 class DoEndInteractiveCommunication extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
 
   DoEndInteractiveCommunication(Network context, Terminal terminal) {
     super(Label.END_INTERACTIVE_COMMUNICATION, context, terminal, receiver -> receiver.canEndCurrentCommunication());

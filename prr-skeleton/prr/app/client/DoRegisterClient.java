@@ -11,11 +11,8 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoRegisterClient extends Command<Network> {
 
-  Network _receiver;
-
   DoRegisterClient(Network receiver) {
     super(Label.REGISTER_CLIENT, receiver);
-    _receiver = receiver;
     addStringField("clientId", prr.app.client.Message.key());
     addStringField("clientName", prr.app.client.Message.name());
     addIntegerField("taxId", prr.app.client.Message.taxId());

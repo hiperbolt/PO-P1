@@ -9,7 +9,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show balance.
  */
 class DoShowTerminalBalance extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
   DoShowTerminalBalance(Network context, Terminal terminal) {
     super(Label.SHOW_BALANCE, context, terminal);
     _terminal = terminal;

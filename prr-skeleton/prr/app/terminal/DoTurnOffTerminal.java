@@ -10,7 +10,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Turn off the terminal.
  */
 class DoTurnOffTerminal extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
   DoTurnOffTerminal(Network context, Terminal terminal) {
     super(Label.POWER_OFF, context, terminal);
     _terminal = terminal;

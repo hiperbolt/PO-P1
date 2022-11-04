@@ -10,7 +10,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command for showing the ongoing communication.
  */
 class DoShowOngoingCommunication extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
   DoShowOngoingCommunication(Network context, Terminal terminal) {
     super(Label.SHOW_ONGOING_COMMUNICATION, context, terminal);
     _terminal = terminal;

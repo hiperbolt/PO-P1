@@ -12,10 +12,8 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command to open a file.
  */
 class DoOpenFile extends Command<NetworkManager> {
-  private NetworkManager _receiver;
   DoOpenFile(NetworkManager receiver)  {
     super(Label.OPEN_FILE, receiver);
-    _receiver = receiver;
   }
   
   @Override

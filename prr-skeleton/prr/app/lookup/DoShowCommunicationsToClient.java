@@ -10,10 +10,9 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show communications to a client.
  */
 class DoShowCommunicationsToClient extends Command<Network> {
-  Network _receiver;
+  
   DoShowCommunicationsToClient(Network receiver) {
     super(Label.SHOW_COMMUNICATIONS_TO_CLIENT, receiver);
-    receiver = receiver;
     addStringField("client", Message.clientKey());
   }
 

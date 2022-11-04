@@ -15,8 +15,8 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command for starting communication.
  */
 class DoStartInteractiveCommunication extends TerminalCommand {
-  Terminal _terminal;
-  Network _network;
+  private Terminal _terminal;
+  private Network _network;
   DoStartInteractiveCommunication(Network context, Terminal terminal) {
     super(Label.START_INTERACTIVE_COMMUNICATION, context, terminal, Terminal::canStartCommunication);
     _terminal = terminal;

@@ -9,7 +9,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Disable client notifications.
  */
 class DoDisableClientNotifications extends Command<Network> {
-
+  
   DoDisableClientNotifications(Network receiver) {
     super(Label.DISABLE_CLIENT_NOTIFICATIONS, receiver);
     addStringField("clientId", Message.key());

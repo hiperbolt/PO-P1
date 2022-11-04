@@ -15,8 +15,8 @@ import pt.tecnico.uilib.menus.CommandException;
  * Command for sending a text communication.
  */
 class DoSendTextCommunication extends TerminalCommand {
-  Terminal _terminal;
-  Network _context;
+  private Terminal _terminal;
+  private Network _context;
   DoSendTextCommunication(Network context, Terminal terminal) {
     super(Label.SEND_TEXT_COMMUNICATION, context, terminal, Terminal::canStartCommunication);
     _terminal = terminal;

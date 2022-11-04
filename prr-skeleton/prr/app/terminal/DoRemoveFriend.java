@@ -8,7 +8,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Remove friend.
  */
 class DoRemoveFriend extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
 
   DoRemoveFriend(Network context, Terminal terminal) {
     super(Label.REMOVE_FRIEND, context, terminal);

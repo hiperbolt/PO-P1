@@ -8,10 +8,8 @@ import pt.tecnico.uilib.menus.CommandException;
  * Show clients with positive balance.
  */
 class DoShowClientsWithoutDebts extends Command<Network> {
-  private Network _receiver;
   DoShowClientsWithoutDebts(Network receiver) {
     super(Label.SHOW_CLIENTS_WITHOUT_DEBTS, receiver);
-    _receiver = receiver;
   }
 
   @Override

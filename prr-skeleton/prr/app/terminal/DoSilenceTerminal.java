@@ -10,7 +10,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Silence the terminal.
  */
 class DoSilenceTerminal extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
   DoSilenceTerminal(Network context, Terminal terminal) {
     super(Label.MUTE_TERMINAL, context, terminal);
     _terminal = terminal;

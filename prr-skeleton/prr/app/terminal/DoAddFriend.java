@@ -9,7 +9,7 @@ import pt.tecnico.uilib.menus.CommandException;
  * Add a friend.
  */
 class DoAddFriend extends TerminalCommand {
-  Terminal _terminal;
+  private Terminal _terminal;
 
   DoAddFriend(Network context, Terminal terminal) {
     super(Label.ADD_FRIEND, context, terminal);
