@@ -17,6 +17,12 @@ abstract public class InteractiveCommunication extends Communication{
         return _duration;
     }
 
+    
+    /** 
+     * gets the duration of the communication
+     * 
+     * @return size
+     */
     @Override
     public int getUnits(){
         return this.getSize();
@@ -38,10 +44,22 @@ abstract public class InteractiveCommunication extends Communication{
 
     }
 
+    
+    /** 
+     * sets the communication duration
+     * 
+     * @param duration
+     */
     public void setDuration(int duration) {
         this._duration = duration;
     }
 
+    
+    /** 
+     * returns the communication duration
+     * 
+     * @return duration
+     */
     public double getDuration(){
         return this._duration;
     }

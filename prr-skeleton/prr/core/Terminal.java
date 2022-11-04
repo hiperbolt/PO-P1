@@ -103,9 +103,9 @@ abstract public class Terminal implements Serializable {
   /**
    * Receives an SMS.
    *
-   * @param communication Received communication.
-   *
-   **/
+   * @param communication - Received communication.
+   * @throws TerminalSilentException if the terminal is off
+   */
   protected void acceptSMS(Communication communication) throws TerminalOffException{
     // We check if we are in the right mode to receive an SMS.
     if(this.getMode() != TerminalMode.OFF){
@@ -124,10 +124,13 @@ abstract public class Terminal implements Serializable {
    * Creates and sends a Voice call.
    * Our terminal mode is changed to BUSY, the communication is set as the onGoing, and is added to our made communications.
    *
-   * @param
-   *
+   * @param outboundTerminal - Destination terminal
+   * @throws TerminalOffException if the terminal is off
+   * @throws TerminalBusyException if the terminal is busy
+   * @throws TerminalSilentException if the terminal is silent
    */
-  public void makeVoiceCall(Terminal outboundTerminal) throws TerminalOffException, TerminalBusyException, TerminalSilentException {
+  
+   public void makeVoiceCall(Terminal outboundTerminal) throws TerminalOffException, TerminalBusyException, TerminalSilentException {
     // We check if we are in the right mode to make a Voice call.
     if(this.canStartCommunication()){
       // We create the Voice call.
@@ -150,7 +153,10 @@ abstract public class Terminal implements Serializable {
    * Accepts a voice call. The terminal mode is changed, and the communication is added to the received communications list and to the ongoing communication attribute.
    * This communication will end when endOnGoingCommunication is called.
    *
-   * @param communication
+   * @param communication - Received voice communication.
+   * @throws TerminalOffException if the terminal is off
+   * @throws TerminalBusyException if the terminal is busy
+   * @throws TerminalSilentException if the terminal is silent
    */
   protected void acceptVoiceCall(VoiceCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException {
     // We check if we are in the right mode to receive a Voice call.
@@ -174,6 +180,12 @@ abstract public class Terminal implements Serializable {
 
   protected abstract void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalSilentException, TerminalBusyException, prr.core.exception.UnsupportedOperationException;
 
+  
+  /** 
+   * sets the terminal mode to busy and sets the onGoing communication to the provided communication.
+   * 
+   * @param c - The communication to set as onGoing.
+   */
   public void setOnGoingCommunication(InteractiveCommunication c) {
     // We save our current mode in the previousMode attribute.
     this._previousMode = this._mode;
@@ -211,6 +223,10 @@ abstract public class Terminal implements Serializable {
     return _mode;
   }
 
+  
+  /** 
+   * @param n
+   */
   public void receiveNotification(Notification n){
     // We check if our client has failed contact reception active.
     if(this.getClient().getNotificationReception()){
@@ -220,8 +236,13 @@ abstract public class Terminal implements Serializable {
     }
   }
 
+  
+  /** 
+   * sends a notification to the provided terminal.
+   * 
+   * @param to - The terminal to send the communication notification to.
+   */
   public void sendNotifications(TerminalMode to) {
-    // FIXME there is probably a more elegant way to do this
     // We iterate over the toNotify list.
     for (CommunicationAttempt attempt : _toNotify) {
       TerminalMode from = attempt.getMode();
@@ -299,36 +320,81 @@ abstract public class Terminal implements Serializable {
     return false;
   }
   
+  
+  /** 
+   * gets the terminal's id
+   * 
+   * @return String - terminal's id
+   */
   public String getId() {
     return _id;
   }
+  
+  /** 
+   * removes a frind from the terminal's friends list.
+   * @param friendId - the id of the terminal friend to remove
+   * @return boolean - if the friend was removed
+   */
   public boolean removeFriend(String friendId){
+    //checks if the friend`s list is empty
     if (_friends.isEmpty()){
       return false;
     }
-
+    //checks if the friend is in the list and removes it
     return _friends.removeIf(t -> t.getId().equals(friendId));
   }
 
+  
+  /** 
+   * adds a friend to the terminal's friends list.
+   * @param friend - the terminal to add as a friend
+   * @return boolean - if the friend was added
+   */
   public boolean addFriend(Terminal friend){
+    //checks if the friend is already in the list
     if (_friends.contains(friend) || friend == this){
       return false;
     }
     return _friends.add(friend);
   }
 
+  
+  /** 
+   * checks if the provided terminal is a friend of this terminal.
+   * 
+   * @param terminal - the terminal to check if it is a friend
+   * @return boolean - if the terminal is a friend
+   */
   public boolean isFriend(Terminal terminal){
     return _friends.contains(terminal);
   }
 
+  
+  /** 
+   * sees if the terminal is unused(no made communications and no received notifications)
+   * 
+   * @return boolean - if the terminal is unused
+   */
   public boolean isUnused(){
     return _madeCommunications.isEmpty() && _receivedCommunications.isEmpty();
   }
 
+  
+  /**
+   * gets the terminal`s paid ammount
+   * 
+   * @return int - paid amount
+   */
   public int getBalancePaid(){
     return (int) Math.round(_payments);
   }
 
+  
+  /** 
+   * gets the terminal`s debt
+   * 
+   * @return int - the terminal`s debt
+   */
   public int getBalanceDebt(){
     return (int) Math.round(_debt);
   }
@@ -343,8 +409,13 @@ abstract public class Terminal implements Serializable {
   }
 
 
+  
+  /** 
+   * gets the terminal string format
+   * 
+   * @return String - terminal`s string format
+   */
   // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-  @Override // FIXME make sure this makes sense to be an override.
   public String toString(){
     String terminalType = "";
     if (this instanceof BasicTerminal){
@@ -383,32 +454,74 @@ abstract public class Terminal implements Serializable {
     return terminalType + "|" + terminalId + "|" + clientId + "|" + terminalStatus + "|" + balancePaid + "|" + balanceDebts + friends;
   }
 
+  
+  /** 
+   * gets the terminal`s balance
+   * 
+   * @return double - therminal`s balance
+   */
   public double getBalance() {
     return _payments - _debt;
   }
 
 
 
+  
+  /** 
+   * gets the terminal`s owner
+   * 
+   * @return Client - terminal owner
+   */
   public Client getClient() {
     return _owner;
   }
 
+  
+  /** 
+   * gets the terminal`s made communications
+   * 
+   * @return List<Communication> - a list of the terminal`s made communications
+   */
   public List<Communication> getMadeCommunications() {
       return _madeCommunications;
   }
 
+  
+  /** 
+   * gets the terminal`s received communications
+   * 
+   * @return List<Communication> - a list of the terminal`s received communications
+   */
   public List<Communication> getReceivedCommunications() {
       return _receivedCommunications;
   }
 
+  
+  /** 
+   * gets the terminal`s debt
+   * 
+   * @return double - the terminal`s debt
+   */
   public double getDebt() {
     return _debt;
   }
 
+  
+  /** 
+   * gets the terminal`s payments
+   * 
+   * @return double - the terminal`s payments
+   */
   public double getPayments() {
     return _payments;
   }
 
+  
+  /** 
+   * pays a communication
+   * 
+   * @param communication - communication to pay
+   */
   public void payCommunication(Communication communication){
     // First we check if the communication is finished, hasn't been paid yet and the terminal is the one that made it.
     if (!communication.isOngoingCommunication() && !communication.isPaid() && communication.getFrom().equals(this)) {
@@ -418,8 +531,15 @@ abstract public class Terminal implements Serializable {
     }
   }
 
+  
+  /** 
+   * gets a communication by id
+   * 
+   * @param communication ID - communication id to get
+   * @return Communication - communication with the provided id
+   * @throws AlreadyPaidException - if the communication is already paid
+   */
   public Communication getCommunicationByID(int communication) throws AlreadyPaidException {
-    // FIXME
     for (Communication c : _madeCommunications) {
       if (c.getId() == communication) {
         return c;
@@ -434,6 +554,13 @@ abstract public class Terminal implements Serializable {
   }
 
 
+  
+  /** 
+   * ends an ongoing communication that the terminal made
+   * 
+   * @param duration - duration of the communication
+   * @return double - the cost of the communication
+   */
   public double endOngoingCommunication(int duration) {
     double cost =  _ongoingCommunication.end(duration, _owner.getTariffPlan());
     switch (_previousMode) {
@@ -451,6 +578,13 @@ abstract public class Terminal implements Serializable {
     return cost;
   }
 
+  
+  /** 
+   * ends an ongoing communication that the terminal received
+   * 
+   * @param duration - duration of the communication
+   * @param tariffPlan - tariff plan of the terminal that made the communication
+   */
   public void endOngoingCommunicationAsReceiver(int duration, TariffPlan tariffPlan) {
     _ongoingCommunication.end(duration, _owner.getTariffPlan());
     switch (_previousMode) {

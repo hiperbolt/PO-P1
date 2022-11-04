@@ -35,17 +35,23 @@ public class Client implements Serializable{
 
 
     /**
-     * Disables notifications.
+     * Disables client notifications.
      */
     public void disableReceiveNotifications(){
         this._receiveNotifications = false;
     }
+    
+    /** 
+     * @return String client key
+     */
     public String getKey(){
         return this._key;
     }
 
     /**
      * Enables the client to receive notifications.
+     * 
+     * @return boolean
      */
     public void enableReceiveNotifications(){
         this._receiveNotifications = true;
@@ -76,6 +82,10 @@ public class Client implements Serializable{
         }
         return res;
     }
+    
+    /** 
+     * @return number of terminals
+     */
     public int getTerminalsSize(){
         if (_terminals == null){
             return 0;
@@ -83,10 +93,18 @@ public class Client implements Serializable{
         return _terminals.size();
     }
 
+    
+    /** 
+     * @return ClientLevel
+     */
     public ClientLevel getLevel(){
         return this._level;
     }
 
+    
+    /** 
+     * @return a client to string
+     */
     public String toString() {
         // CLIENT|key|name|taxId|type|receiveNotifications|tariffPlan|terminals|payments|debts
         // notifications by received order
@@ -95,6 +113,10 @@ public class Client implements Serializable{
         return "CLIENT|" + _key + "|" + _name + "|" + _taxNumber + "|" + _level + "|" + notifications + "|" + getTerminalsSize() + "|" + calculatePayments() + "|" + calculateDebts();
     }
 
+    
+    /** 
+     * @return List<Notification> of client notifications
+     */
     public List<Notification> getNotifs() {
         // Make a deep copy of the notifications
         if(!_notifications.isEmpty()) {
@@ -105,16 +127,31 @@ public class Client implements Serializable{
         return null;
     }
 
+    
+    /** 
+     * adds a new terminal to the client
+     * 
+     * @param terminal terminal to add
+     */
     public void addTerminal(Terminal t) {
+        //check if terminal t not null and adds it to the client
         if (t != null){
             _terminals.add(t);
         }
     }
 
+    
+    /** 
+     * @return List<Terminal> of client terminals
+     */
     public List<Terminal> getTerminals() {
         return _terminals;
     }
 
+    
+    /** 
+     * @return client debt
+     */
     public double calculateDebt(){
         double res = 0;
         for (Terminal terminal : _terminals) {
@@ -123,10 +160,18 @@ public class Client implements Serializable{
         return res;
     }
 
+    
+    /** 
+     * @return client TariffPlan
+     */
     public TariffPlan getTariffPlan(){
         return this._tariffPlan;
     }
 
+    
+    /** 
+     * @return List<String> of made communications
+     */
     public List<String> getMadeCommunications(){
         List<String> res = new ArrayList<String>();
         for (Terminal terminal : _terminals) {
@@ -137,6 +182,10 @@ public class Client implements Serializable{
         return res;
     }
 
+    
+    /** 
+     * @return List<String> of received communications
+     */
     public List<String> getReceivedCommunications() {
         List<String> res = new ArrayList<String>();
         for (Terminal terminal : _terminals) {
@@ -147,10 +196,20 @@ public class Client implements Serializable{
         return res;
     }
 
+    
+    /** 
+     * @return boolean of receive notifications
+     */
     public boolean getNotificationReception() {
         return this._receiveNotifications;
     }
 
+    
+    /** 
+     * adds a new notification to the client
+     * 
+     * @param n notification to add
+     */
     public void addNotification(Notification n) {
         if (this._notifications == null){
             this._notifications = new ArrayList<Notification>();

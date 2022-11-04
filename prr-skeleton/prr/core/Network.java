@@ -311,6 +311,10 @@ public class Network implements Serializable {
     return returnList;
   }
 
+  
+  /** 
+   * @return List<String>
+   */
   public List<String> getClientsWithDebts(){
     // First we're going to get all clients with debts.
     ArrayList<Client> inDebtClients = new ArrayList<>();
@@ -341,6 +345,7 @@ public class Network implements Serializable {
   public List<String> getTerminalsWithPositiveBalance(){
       ArrayList<String> positiveBalanceTerminals = new ArrayList<>();
         for (Terminal t : _terminals){
+            //checks if terminal has positive balance
             if (t.getBalance() > 0){
               positiveBalanceTerminals.add(t.toString());
             }
@@ -348,6 +353,12 @@ public class Network implements Serializable {
         return positiveBalanceTerminals;
     }
 
+  
+  /** 
+   * gets the sum global payments
+   * 
+   * @return global payment
+   */
   public long getGlobalPayments() {
     long total = 0;
     for (Client c: _clients) {
@@ -356,6 +367,12 @@ public class Network implements Serializable {
     return total;
   }
 
+  
+  /** 
+   * gets the sum global debts
+   * 
+   * @return global debts
+   */
   public long getGlobalDebts() {
     long total = 0;
     for (Client c: _clients) {

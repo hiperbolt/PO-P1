@@ -14,6 +14,16 @@ public class FancyTerminal extends Terminal{
         super(id, client);
     }
 
+    
+    /** 
+     * makes a video communication
+     * 
+     * @param outboundTerminal the terminal to which the communication is directed
+     * @throws TerminalOffException if the terminal is off
+     * @throws TerminalBusyException if the terminal is busy
+     * @throws TerminalSilentException if the terminal is silent
+     * @throws UnsupportedOperationException if the terminal does not support the communication mode(if is basic)
+     */
     @Override
     public void makeVideoCall(Terminal outboundTerminal) throws TerminalOffException, TerminalBusyException, TerminalSilentException, UnsupportedOperationException {
     // We check if we are in the right mode to make a Video call.
@@ -34,6 +44,15 @@ public class FancyTerminal extends Terminal{
     }
     }
 
+    
+    /** 
+     * accepts a video call
+     * 
+     * @param communication the communication object
+     * @throws TerminalOffException if the terminal is off
+     * @throws TerminalBusyException if the terminal is busy
+     * @throws TerminalSilentException if the terminal is silent
+     */
     @Override
     protected void acceptVideoCall(VideoCommunication communication) throws TerminalOffException, TerminalBusyException, TerminalSilentException {
     // We check if we are in the right mode to receive a Video call.

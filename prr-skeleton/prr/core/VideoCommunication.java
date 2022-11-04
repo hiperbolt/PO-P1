@@ -17,6 +17,13 @@ public class VideoCommunication extends InteractiveCommunication{
     }
 
 
+    
+    /** 
+     * calculates the cost of the communication
+     * 
+     * @param plan - the plan to be used to the communication
+     * @return double - the cost of the communication
+     */
     @Override
     protected double computeCost(TariffPlan plan){
         double cost = plan.computeCost(this.getFrom().getClient(), this);
@@ -24,6 +31,12 @@ public class VideoCommunication extends InteractiveCommunication{
         return cost;
     }
 
+    
+    /** 
+     * gets the communication type
+     * 
+     * @return String - the communication type
+     */
     @Override
     public String getType(){
         return "VIDEO";

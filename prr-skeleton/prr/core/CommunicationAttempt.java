@@ -17,18 +17,42 @@ public class CommunicationAttempt implements Serializable {
         this._communication = communication;
     }
 
+    
+    /** 
+     * returns the communication mode
+     * 
+     * @return TerminalMode
+     */
     public TerminalMode getMode(){
         return this._mode;
     }
 
+    
+    /** 
+     * returns the terminal to which the communication is directed
+     * 
+     * @return Terminal
+     */
     public Terminal getTo(){
         return this._to;
     }
 
+    
+    /** 
+     * returns the terminal from which the communication is originated
+     * 
+     * @return Terminal
+     */
     public Terminal getFrom(){
         return this._from;
     }
 
+    
+    /** 
+     * returns the communication object
+     * 
+     * @return Communication
+     */
     public Communication getCommunication(){
         return this._communication;
     }
