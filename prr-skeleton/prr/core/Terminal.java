@@ -278,7 +278,7 @@ abstract public class Terminal implements Serializable {
    * @return true if it succeeds, false if not.
    **/
   public boolean setOnSilent(){
-    if (_mode == TerminalMode.ON || _mode == TerminalMode.BUSY){
+    if (_mode == TerminalMode.ON || _mode == TerminalMode.BUSY || _mode == TerminalMode.OFF){
       _mode = TerminalMode.SILENCE;
       sendNotifications(TerminalMode.SILENCE);
       return true;
