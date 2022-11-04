@@ -61,11 +61,11 @@ abstract public class Terminal implements Serializable {
     // We create the attempt with our current Terminal mode and with the provided arguments.
     CommunicationAttempt attempt = new CommunicationAttempt(modeAtAttempt,this, from, c);
     // We check an equivalent attempt is not already in the list.
-    for (CommunicationAttempt a : _toNotify){
-      if (attempt.getMode() == attempt.getMode() && attempt.getFrom() == attempt.getFrom()){
-        return;
-      }
-    }
+    //for (CommunicationAttempt a : _toNotify){
+    // if (a.getMode() == attempt.getMode() && attempt.getFrom() == attempt.getFrom()){
+    //    return;
+    //  }
+    //}
 
     // We add it to the toNotify list.
     _toNotify.add(attempt);

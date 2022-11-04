@@ -17,6 +17,14 @@ public class Notification implements Serializable{
         _to = to;
     }
 
+    public NotificationType getType(){
+        return _type;
+    }
+
+    public String getToId(){
+        return _to.getId();
+    }
+
     public String toString(){
         return _type + "|" + _to.getId();
     }

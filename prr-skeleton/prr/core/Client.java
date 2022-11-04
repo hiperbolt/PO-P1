@@ -152,9 +152,15 @@ public class Client implements Serializable{
     }
 
     public void addNotification(Notification n) {
-    if (this._notifications == null){
-        this._notifications = new ArrayList<Notification>();
-    }
-    this._notifications.add(n);
+        if (this._notifications == null){
+            this._notifications = new ArrayList<Notification>();
+        }
+        // Check if the notification is already in the list
+        for (Notification notification : _notifications) {
+            if (notification.getType() == n.getType() && notification.getToId().equals(n.getToId())){
+                return;
+            }
+        }
+        this._notifications.add(n);
     }
 }
