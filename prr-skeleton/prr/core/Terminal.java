@@ -57,9 +57,9 @@ abstract public class Terminal implements Serializable {
    * @param from - The terminal that is trying to communicate with us.
    * @param c - The communication that is being attempted.
    */
-  public void createAttempt(Terminal from, Communication c){
+  public void createAttempt(Terminal from, Communication c, TerminalMode modeAtAttempt){
     // We create the attempt with our current Terminal mode and with the provided arguments.
-    CommunicationAttempt attempt = new CommunicationAttempt(this._mode,this, from, c);
+    CommunicationAttempt attempt = new CommunicationAttempt(modeAtAttempt,this, from, c);
     // We check an equivalent attempt is not already in the list.
     for (CommunicationAttempt a : _toNotify){
       if (attempt.getMode() == attempt.getMode() && attempt.getFrom() == attempt.getFrom()){
@@ -115,7 +115,7 @@ abstract public class Terminal implements Serializable {
     } else {
       // If we are here, we are not in the right mode.
       // We create an attempt and throw the exception.
-      this.createAttempt(communication.getFrom(), communication);
+      this.createAttempt(communication.getFrom(), communication, this.getMode());
       throw new TerminalOffException(this.getId());
     }
   }
@@ -161,7 +161,7 @@ abstract public class Terminal implements Serializable {
     } else {
       // If we are here, we are not in the right mode.
       // We create an attempt and throw the exception.
-      this.createAttempt(communication.getFrom(), communication);
+      this.createAttempt(communication.getFrom(), communication, this.getMode());
       switch (this.getMode()) {
         case OFF -> throw new TerminalOffException(this.getId());
         case BUSY -> throw new TerminalBusyException(this.getId());

@@ -44,7 +44,7 @@ public class FancyTerminal extends Terminal{
     } else {
         // If we are here, we are not in the right mode.
         // We create an attempt and throw the exception.
-        this.createAttempt(communication.getFrom(), communication);
+        this.createAttempt(communication.getFrom(), communication, getMode());
         switch (this.getMode()) {
             case OFF -> throw new TerminalOffException(this.getId());
             case BUSY -> throw new TerminalBusyException(this.getId());
